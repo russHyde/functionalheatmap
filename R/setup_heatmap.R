@@ -8,9 +8,9 @@
 #'
 #' @export
 setup_heatmap <- function(x) {
-  if(is.matrix(x$bodydata)){
-    stop()
-  }
+  stopifnot(
+    .is_nonempty_list_of_data_frames(x) && "bodydata" %in% names(x)
+  )
   x
 }
 

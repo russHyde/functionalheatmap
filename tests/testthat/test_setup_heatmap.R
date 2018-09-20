@@ -14,6 +14,11 @@ test_that("setup_heatmap: invalid input", {
     setup_heatmap(x = list(bodydata = matrix(), 1:10, TRUE)),
     info = "setup_heatmap should receive a list of data-frames"
   )
+
+  expect_error(
+    setup_heatmap(x = list(a = data.frame())),
+    info = "`bodydata` should be present"
+  )
 })
 
 test_that("setup_heatmap: valid input", {

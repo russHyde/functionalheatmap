@@ -5,5 +5,7 @@
 ###############################################################################
 
 .is_nonempty_list_of_data_frames <- function(x) {
-  TRUE
+  is.list(x) &&
+    length(x) > 0 &&
+    all(as.logical(Map(is.data.frame, x)))
 }
