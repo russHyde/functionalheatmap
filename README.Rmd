@@ -20,6 +20,12 @@ knitr::opts_chunk$set(
   https://travis-ci.org/russHyde/functionalheatmap
 )
 
+[![Coverage Status](
+  https://img.shields.io/codecov/c/github/russHyde/functionalheatmap/master.svg
+)](
+  https://codecov.io/github/russHyde/functionalheatmap?branch=master
+)
+
 The goal of functionalheatmap is to ...
 
 ## Installation

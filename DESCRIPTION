@@ -12,4 +12,5 @@ LazyData: true
 URL: https://github.com/russHyde/functionalheatmap
 BugReports: https://github.com/russHyde/functionalheatmap/issues
 RoxygenNote: 6.0.1
-Suggests: testthat
+Suggests: testthat,
+    covr
