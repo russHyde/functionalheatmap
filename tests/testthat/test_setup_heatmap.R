@@ -11,7 +11,7 @@ test_that("setup_heatmap: invalid input", {
   )
 
   expect_error(
-    setup_heatmap(x = list(bodydata = matrix(), 1:10, TRUE)),
+    setup_heatmap(x = list(body_data = matrix(), 1:10, TRUE)),
     info = "setup_heatmap should receive a list of data-frames"
   )
 
@@ -25,13 +25,18 @@ test_that("setup_heatmap: valid input", {
   df1 <- data.frame(
     feature_id = letters[1:3],
     sample_id = rep(LETTERS[1:3], each = 3),
-    fitted_value = rnorm(9)
+    fitted_value = 1:9
+  )
+  m1 <- matrix(
+    1:9,
+    nrow = 3, ncol = 3,
+    dimnames = list(letters[1:3], LETTERS[1:3])
   )
 
   expect_equal(
-    setup_heatmap(list(bodydata = df1)),
-    list(bodydata = df1),
-    info = "If only the bodydata is provided, output data should match input"
+    setup_heatmap(list(body_data = df1)),
+    list(body_matrix = m1),
+    info = "If only bodydata is provided, it's converted to a matrix"
   )
 })
 
