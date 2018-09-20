@@ -4,7 +4,12 @@
 \alias{setup_heatmap}
 \title{setup_heatmap: defines the data-structures for use in constructing heatmaps}
 \usage{
-setup_heatmap()
+setup_heatmap(x)
+}
+\arguments{
+\item{x}{A named-list or poly_frame of dataframes /
+tibbles. There should, at least, be a data-frame called `bodydata`. This
+will be converted to a matrix when plotting.}
 }
 \description{
 setup_heatmap: defines the data-structures for use in constructing heatmaps
