@@ -4,5 +4,8 @@ language: R
 sudo: false
 cache: packages
 
+r_github_packages:
+  - jimhester/lintr
+
 env:
 - LINTR_COMMENT_BOT=true
