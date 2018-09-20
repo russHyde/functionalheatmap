@@ -14,3 +14,10 @@ BugReports: https://github.com/russHyde/functionalheatmap/issues
 RoxygenNote: 6.0.1
 Suggests: testthat,
     covr
+Collate:
+    'data_manipulation.R'
+    'data_validity.R'
+    'setup_heatmap.R'
+Imports: dplyr,
+    tidyr,
+    magrittr

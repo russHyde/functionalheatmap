@@ -7,9 +7,9 @@
 setup_heatmap(x)
 }
 \arguments{
-\item{x}{A named-list or poly_frame of dataframes /
-tibbles. There should, at least, be a data-frame called `bodydata`. This
-will be converted to a matrix when plotting.}
+\item{x}{A poly_frame or list of named data-frames. This
+must contain a data-frame called body_data which defines the data used in
+the body of the heatmap (by two index columns and a value column).}
 }
 \description{
 setup_heatmap: defines the data-structures for use in constructing heatmaps
