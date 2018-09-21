@@ -4,7 +4,7 @@
 \alias{format_heatmap}
 \title{format_heatmap}
 \usage{
-format_heatmap(x)
+format_heatmap(x, ...)
 }
 \arguments{
 \item{x}{A heatmap_data object. As returned by
