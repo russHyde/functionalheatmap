@@ -46,7 +46,9 @@ test_that("format_heatmap modifies formatting args for ComplexHeatmap", {
     info = "`format_heatmap` defines sensible defaults for omics"
   )
 
-  #expect_equal(
-  #
-  #)
+  expect_equal(
+    format_heatmap(hd1, show_row_names = TRUE, cluster_columns = TRUE)$formats,
+    list(cluster_columns = TRUE, show_row_names = TRUE),
+    info = "`format_heatmap` lets user define formatting flags for Heatmap()"
+  )
 })
