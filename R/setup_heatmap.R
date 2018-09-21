@@ -32,7 +32,9 @@ setup_heatmap <- function(x) {
   ) %>%
     as_matrix(rowname_col = row_index)
 
-  list(body_matrix = body_matrix)
+  as_heatmap_data(
+    list(body_matrix = body_matrix)
+  )
 }
 
 ###############################################################################

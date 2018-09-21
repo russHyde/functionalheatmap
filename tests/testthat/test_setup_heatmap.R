@@ -35,7 +35,7 @@ test_that("setup_heatmap: valid input", {
 
   expect_equal(
     setup_heatmap(list(body_data = df1)),
-    list(body_matrix = m1),
+    as_heatmap_data(list(body_matrix = m1)),
     info = "If only bodydata is provided, it's converted to a matrix"
   )
 })

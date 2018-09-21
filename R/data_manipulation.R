@@ -8,7 +8,7 @@
 #' @importFrom   dplyr         select_
 #' @importFrom   magrittr      set_rownames   %>%
 #' @noRd
-#'
+
 as_matrix <- function(df, rowname_col = NULL) {
   if (is.null(rowname_col)) {
     as.matrix(df)
@@ -21,3 +21,11 @@ as_matrix <- function(df, rowname_col = NULL) {
 }
 
 ###############################################################################
+
+#' Converts a list into a heatmap_data object
+#'
+#' @noRd
+
+as_heatmap_data <- function(x) {
+  structure(x, class = "heatmap_data")
+}
