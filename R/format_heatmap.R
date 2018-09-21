@@ -21,12 +21,18 @@
 #' @importFrom   methods       is
 #' @export
 
-format_heatmap <- function(x) {
+format_heatmap <- function(x, ...) {
   if (!methods::is(x, "heatmap_data")) {
     stop("`x` should be a `heatmap_data` object in `format_heatmap`")
   }
 
-  formats <- .get_default_formatting()
+  formats <- list(...)
+  defaults <- .get_default_formatting()
+
+  formats <- append(
+    formats,
+    defaults[!names(defaults) %in% names(formats)]
+  )
 
   x %>%
     append(list(formats = formats)) %>%
