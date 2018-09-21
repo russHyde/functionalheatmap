@@ -37,7 +37,7 @@ test_that("`format_heatmap` works on valid input", {
 
 ###############################################################################
 
-test_that("format_heatmap modifies formatting args for ComplexHeatmap", {
+test_that("`format_heatmap` modifies formatting args for `Heatmap()`", {
   hd1 <- as_heatmap_data(list(body_matrix = matrix()))
 
   expect_equivalent(
@@ -46,9 +46,49 @@ test_that("format_heatmap modifies formatting args for ComplexHeatmap", {
     info = "`format_heatmap` defines sensible defaults for omics"
   )
 
-  expect_equal(
+  expect_equivalent(
     format_heatmap(hd1, show_row_names = TRUE, cluster_columns = TRUE)$formats,
     list(cluster_columns = TRUE, show_row_names = TRUE),
     info = "`format_heatmap` lets user define formatting flags for Heatmap()"
+  )
+})
+
+###############################################################################
+
+test_that("args set by format_heatmap pass through to a Heatmap() call", {
+  hd1 <- as_heatmap_data(list(body_matrix = matrix(1:12, nrow = 4)))
+
+  # - format_heatmap() should set show_row_names to FALSE by default (when
+  # Heatmap() is subsequently called by plot_heatmap())
+  m <- mockery::mock(1)
+  testthat::with_mock(
+    Heatmap = m, {
+      plot_heatmap(format_heatmap(hd1))
+    }, .env = "ComplexHeatmap"
+  )
+  hm_args <- mockery::mock_args(m)[[1]]
+  expect_true(
+    "show_row_names" %in% names(hm_args) && !hm_args$show_row_names,
+    info = paste(
+      "default formatting arguments should be passed to Heatmap() when",
+      "set in format_heatmap()"
+    )
+  )
+
+  # set show_row_names = TRUE and check that it passes through to Heatmap()
+  m <- mockery::mock(1)
+  testthat::with_mock(
+    Heatmap = m, {
+      plot_heatmap(format_heatmap(hd1, show_row_names = TRUE))
+    },
+    .env = "ComplexHeatmap"
+  )
+  hm_args <- mockery::mock_args(m)[[1]]
+  expect_true(
+    "show_row_names" %in% names(hm_args) && hm_args$show_row_names,
+    info = paste(
+      "non-default formatting arguments should be passed to Heatmap() when",
+      "set in format_heatmap()"
+    )
   )
 })
