@@ -12,8 +12,8 @@
 #' @importFrom   methods       is
 #' @export
 
-plot_heatmap <- function (x) {
-  if(missing(x) || !is(x, "heatmap_data")) {
+plot_heatmap <- function(x) {
+  if (missing(x) || !is(x, "heatmap_data")) {
     stop("`x` should be a defined `heatmap_data` object in `plot_heatmap`")
   }
 }

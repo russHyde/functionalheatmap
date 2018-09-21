@@ -13,7 +13,7 @@
 #' @export
 
 setup_heatmap_formatting <- function(x) {
-  if (! methods::is(x, "heatmap_data")) {
+  if (!methods::is(x, "heatmap_data")) {
     stop("`x` should be a `heatmap_data` object in `setup_heatmap_formatting`")
   }
   x
