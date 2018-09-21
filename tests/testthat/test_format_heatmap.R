@@ -40,11 +40,11 @@ test_that("`format_heatmap` works on valid input", {
 test_that("format_heatmap modifies formatting args for ComplexHeatmap", {
   hd1 <- as_heatmap_data(list(body_matrix = matrix()))
 
-  #expect_equal(
-  #  format_heatmap(hd1)$formats,
-  #  list(show_row_names = FALSE, cluster_columns = FALSE),
-  #  info = "format_heatmap defines sensible defaults for omics"
-  #)
+  expect_equivalent(
+    format_heatmap(hd1)$formats,
+    list(cluster_columns = FALSE, show_row_names = FALSE),
+    info = "`format_heatmap` defines sensible defaults for omics"
+  )
 
   #expect_equal(
   #
