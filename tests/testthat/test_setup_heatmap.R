@@ -35,6 +35,7 @@ test_that("`setup_heatmap` works for valid input", {
     sample_id = rep(LETTERS[1:3], each = 3),
     fitted_value = 1:9
   )
+
   m1 <- matrix(
     1:9,
     nrow = 3, ncol = 3,
@@ -45,6 +46,36 @@ test_that("`setup_heatmap` works for valid input", {
     setup_heatmap(list(body_data = df1)),
     basic_hmd(m1),
     info = "If only bodydata is provided, it's converted to a matrix"
+  )
+})
+
+###############################################################################
+
+test_that("user can define row, column and value indexes in `setup_heatmap`", {
+  df1 <- data.frame(
+    ensembl_id = letters[1:3],
+    treatment_group = rep(LETTERS[1:3], each = 3),
+    normalised_expression = 1:9
+  )
+
+  m1 <- matrix(
+    1:9,
+    nrow = 3, ncol = 3,
+    dimnames = list(letters[1:3], LETTERS[1:3])
+  )
+
+  expect_equal(
+    object = setup_heatmap(
+      list(body_data = df1),
+      row_index = "ensembl_id",
+      column_index = "treatment_group",
+      value_index = "normalised_expression"
+    ),
+    expected = basic_hmd(m1),
+    info = paste(
+      "[row|column|value]_index should be used to construct body_matrix from",
+      "body_df"
+    )
   )
 })
 
