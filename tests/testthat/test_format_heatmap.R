@@ -4,7 +4,7 @@ context("Tests for `format_heatmap` in `functionalheatmap`")
 
 ###############################################################################
 
-test_that("`format_heatmap` works on invalid input", {
+test_that("format_heatmap does not work on invalid input", {
   expect_error(
     format_heatmap(),
     info = "no input error to format_heatmap"
@@ -16,9 +16,11 @@ test_that("`format_heatmap` works on invalid input", {
   )
 })
 
+###############################################################################
 
 test_that("`format_heatmap` works on valid input", {
-  hd1 <- as_heatmap_data(list(body_matrix = matrix()))
+  m1 <- matrix(rnorm(12), nrow = 4)
+  hd1 <- as_heatmap_data(list(body_matrix = m1))
 
   expect_is(
     format_heatmap(hd1),
@@ -28,7 +30,23 @@ test_that("`format_heatmap` works on valid input", {
 
   expect_equal(
     format_heatmap(hd1)$body_matrix,
-    matrix(),
-    info = "Data should be unmodified by `format_heatmap`"
+    m1,
+    info = "Data should be unmodified by format_heatmap"
   )
+})
+
+###############################################################################
+
+test_that("format_heatmap modifies formatting args for ComplexHeatmap", {
+  hd1 <- as_heatmap_data(list(body_matrix = matrix()))
+
+  #expect_equal(
+  #  format_heatmap(hd1)$formats,
+  #  list(show_row_names = FALSE, cluster_columns = FALSE),
+  #  info = "format_heatmap defines sensible defaults for omics"
+  #)
+
+  #expect_equal(
+  #
+  #)
 })

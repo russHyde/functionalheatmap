@@ -4,6 +4,14 @@
 
 ###############################################################################
 
+#.get_default_formatting <- function() {
+#  list(
+#    show_row_names = FALSE
+#  )
+#}
+
+# Default formatting: no rownames, no column clustering
+
 #' format_heatmap
 #'
 #' @param        x             A heatmap_data object. As returned by
@@ -16,7 +24,15 @@ format_heatmap <- function(x) {
   if (!methods::is(x, "heatmap_data")) {
     stop("`x` should be a `heatmap_data` object in `format_heatmap`")
   }
+  formats <- list(
+    show_row_names = FALSE,
+    cluster_columns = FALSE
+  )
   x
+  append(
+    x,
+    list(formats = formats)
+  )
 }
 
 ###############################################################################
