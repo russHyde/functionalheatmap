@@ -9,6 +9,9 @@ format_heatmap(x, ...)
 \arguments{
 \item{x}{A heatmap_data object. As returned by
 `setup_heatmap`.}
+
+\item{...}{Any user-specific formatting flags to be passed
+to Heatmap().}
 }
 \description{
 format_heatmap

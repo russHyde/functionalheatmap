@@ -17,6 +17,8 @@
 #'
 #' @param        x             A heatmap_data object. As returned by
 #'   `setup_heatmap`.
+#' @param        ...           Any user-specific formatting flags to be passed
+#'   to Heatmap().
 #'
 #' @importFrom   methods       is
 #' @export
