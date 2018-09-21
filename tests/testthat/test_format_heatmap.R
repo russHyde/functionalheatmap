@@ -4,7 +4,7 @@ context("Tests for `format_heatmap` in `functionalheatmap`")
 
 ###############################################################################
 
-test_that("format_heatmap: invalid input", {
+test_that("`format_heatmap` works on invalid input", {
   expect_error(
     format_heatmap(),
     info = "no input error to format_heatmap"
@@ -17,12 +17,18 @@ test_that("format_heatmap: invalid input", {
 })
 
 
-test_that("format_heatmap: valid input", {
+test_that("`format_heatmap` works on valid input", {
   hd1 <- as_heatmap_data(list(body_matrix = matrix()))
 
-  expect_equal(
+  expect_is(
     format_heatmap(hd1),
-    hd1,
-    info = "Data should be unmodified if no other args are provided"
+    "heatmap_data",
+    info = "output from `format_heatmap` should be a `heatmap_data` object"
+  )
+
+  expect_equal(
+    format_heatmap(hd1)$body_matrix,
+    matrix(),
+    info = "Data should be unmodified by `format_heatmap`"
   )
 })
