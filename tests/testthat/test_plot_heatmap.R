@@ -16,4 +16,16 @@ test_that("plot_heatmap: invalid input", {
   )
 })
 
+test_that("plot_heatmap: valid input", {
+  # Can't really test this function properly as it plots to the graphics device
+
+  hd1 <- as_heatmap_data(list(body_matrix = matrix(1:4, nrow = 2)))
+
+  expect_is(
+    plot_heatmap(hd1),
+    "Heatmap",
+    info = "output from plot_heatmap should be a Heatmap object"
+  )
+})
+
 ###############################################################################

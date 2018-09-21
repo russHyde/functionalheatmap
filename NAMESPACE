@@ -3,6 +3,7 @@
 export(plot_heatmap)
 export(setup_heatmap)
 export(setup_heatmap_formatting)
+importFrom(ComplexHeatmap,Heatmap)
 importFrom(dplyr,select_)
 importFrom(magrittr,"%>%")
 importFrom(magrittr,set_rownames)

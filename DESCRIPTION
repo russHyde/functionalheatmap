@@ -23,4 +23,5 @@ Collate:
 Imports: dplyr,
     tidyr,
     magrittr,
-    methods
+    methods,
+    ComplexHeatmap
