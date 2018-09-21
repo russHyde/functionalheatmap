@@ -8,7 +8,7 @@ plot_heatmap(x)
 }
 \arguments{
 \item{x}{A `heatmap_data` object. As returned by
-`setup_heatmap` or `setup_heatmap_formatting`.}
+`setup_heatmap` or `format_heatmap`.}
 }
 \description{
 ? should be plot.heatmap_data method
