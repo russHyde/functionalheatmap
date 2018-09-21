@@ -7,7 +7,7 @@
 #' ? should be plot.heatmap_data method
 #'
 #' @param        x             A `heatmap_data` object. As returned by
-#'   `setup_heatmap` or `setup_heatmap_formatting`.
+#'   `setup_heatmap` or `format_heatmap`.
 #'
 #' @importFrom   methods       is
 #' @importFrom   ComplexHeatmap   Heatmap

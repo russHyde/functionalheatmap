@@ -17,9 +17,9 @@ Suggests: testthat,
 Collate:
     'data_manipulation.R'
     'data_validity.R'
+    'format_heatmap.R'
     'plot_heatmap.R'
     'setup_heatmap.R'
-    'setup_heatmap_formatting.R'
 Imports: dplyr,
     tidyr,
     magrittr,

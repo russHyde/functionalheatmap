@@ -4,7 +4,7 @@
 
 ###############################################################################
 
-#' setup_heatmap_formatting
+#' format_heatmap
 #'
 #' @param        x             A heatmap_data object. As returned by
 #'   `setup_heatmap`.
@@ -12,9 +12,9 @@
 #' @importFrom   methods       is
 #' @export
 
-setup_heatmap_formatting <- function(x) {
+format_heatmap <- function(x) {
   if (!methods::is(x, "heatmap_data")) {
-    stop("`x` should be a `heatmap_data` object in `setup_heatmap_formatting`")
+    stop("`x` should be a `heatmap_data` object in `format_heatmap`")
   }
   x
 }
