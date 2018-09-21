@@ -18,7 +18,13 @@ plot_heatmap <- function(x) {
   if (missing(x) || !is(x, "heatmap_data")) {
     stop("`x` should be a defined `heatmap_data` object in `plot_heatmap`")
   }
-  ComplexHeatmap::Heatmap(x$body_matrix)
+  do.call(
+    ComplexHeatmap::Heatmap,
+    append(
+      list(x$body_matrix),
+      x$formats
+    )
+  )
 }
 
 ###############################################################################
