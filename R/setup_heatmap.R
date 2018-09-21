@@ -9,6 +9,9 @@
 #' @param        x             A poly_frame or list of named data-frames. This
 #'   must contain a data-frame called body_data which defines the data used in
 #'   the body of the heatmap (by two index columns and a value column).
+#' @param        row_index,column_index,value_index   In the data-frames
+#'   provided, which column contains the data for the rows / columns / body of
+#'   the heatmap?
 #'
 #' @importFrom   magrittr      %>%
 #' @importFrom   tidyr         spread_
@@ -17,18 +20,18 @@
 #'
 #' @export
 
-setup_heatmap <- function(x) {
-  row_index <- "feature_id"
-  col_index <- "sample_id"
-  value_index <- "fitted_value"
-
+setup_heatmap <- function(x,
+                          row_index = "feature_id",
+                          column_index = "sample_id",
+                          value_index = "fitted_value") {
   stopifnot(
     .is_nonempty_list_of_data_frames(x) && "body_data" %in% names(x)
   )
+
   body_matrix <- tidyr::spread_(
     x$body_data,
     value_col = value_index,
-    key_col = col_index
+    key_col = column_index
   ) %>%
     as_matrix(rowname_col = row_index)
 

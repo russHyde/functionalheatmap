@@ -4,12 +4,17 @@
 \alias{setup_heatmap}
 \title{setup_heatmap: defines the data-structures for use in constructing heatmaps}
 \usage{
-setup_heatmap(x)
+setup_heatmap(x, row_index = "feature_id", column_index = "sample_id",
+  value_index = "fitted_value")
 }
 \arguments{
 \item{x}{A poly_frame or list of named data-frames. This
 must contain a data-frame called body_data which defines the data used in
 the body of the heatmap (by two index columns and a value column).}
+
+\item{row_index, column_index, value_index}{In the data-frames
+provided, which column contains the data for the rows / columns / body of
+the heatmap?}
 }
 \description{
 setup_heatmap: defines the data-structures for use in constructing heatmaps
