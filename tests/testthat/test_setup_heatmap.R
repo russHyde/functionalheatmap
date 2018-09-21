@@ -4,7 +4,13 @@ context("Tests for `setup_heatmap`")
 
 ###############################################################################
 
-test_that("setup_heatmap: invalid input", {
+basic_hmd <- function(body_matrix) {
+  as_heatmap_data(list(body_matrix = body_matrix))
+}
+
+###############################################################################
+
+test_that("`setup_heatmap` does not work for invalid input", {
   expect_error(
     setup_heatmap(),
     info = "setup_heatmap without arguments should throw an error"
@@ -21,7 +27,9 @@ test_that("setup_heatmap: invalid input", {
   )
 })
 
-test_that("setup_heatmap: valid input", {
+###############################################################################
+
+test_that("`setup_heatmap` works for valid input", {
   df1 <- data.frame(
     feature_id = letters[1:3],
     sample_id = rep(LETTERS[1:3], each = 3),
@@ -35,7 +43,7 @@ test_that("setup_heatmap: valid input", {
 
   expect_equal(
     setup_heatmap(list(body_data = df1)),
-    as_heatmap_data(list(body_matrix = m1)),
+    basic_hmd(m1),
     info = "If only bodydata is provided, it's converted to a matrix"
   )
 })
