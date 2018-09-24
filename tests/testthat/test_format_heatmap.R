@@ -64,7 +64,8 @@ test_that("args set by format_heatmap pass through to a Heatmap() call", {
   testthat::with_mock(
     Heatmap = m, {
       plot_heatmap(format_heatmap(hd1))
-    }, .env = "ComplexHeatmap"
+    },
+    .env = "ComplexHeatmap"
   )
   hm_args <- mockery::mock_args(m)[[1]]
   expect_true(
