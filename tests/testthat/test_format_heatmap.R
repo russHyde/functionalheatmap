@@ -93,3 +93,34 @@ test_that("args set by format_heatmap pass through to a Heatmap() call", {
     )
   )
 })
+
+###############################################################################
+
+test_that("`split` can be defined using columns of `row_data`", {
+  hd1 <- as_heatmap_data(
+    list(
+      body_matrix = matrix(
+        1:12,
+        nrow = 4, dimnames = list(letters[1:4], LETTERS[1:3])
+      ),
+      row_data = data.frame(
+        feature_id = letters[1:4], my_split = rep(1:2, each = 2)
+      )
+    )
+  )
+
+  expect_equal(
+    object = format_heatmap(hd1, split = "my_split")$formats$split,
+    expected = data.frame(
+      my_split = rep(1:2, each = 2)
+    ),
+    info = "`split` defined by a single column of `row_data`"
+  )
+
+  expect_error(
+    object = format_heatmap(hd1, split = "not a column"),
+    info = "`split` columns should be present in the `row_data` data-frame"
+  )
+})
+
+###############################################################################
