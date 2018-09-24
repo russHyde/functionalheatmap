@@ -32,9 +32,18 @@ setup_heatmap <- function(x,
     x$body_data, row_index, column_index, value_index
   )
 
-  as_heatmap_data(
-    list(body_matrix = body_matrix)
-  )
+  heatmap_list <- list(body_matrix = body_matrix)
+
+  if("row_data" %in% names(x)) {
+    keep_features <- intersect(rownames(body_matrix), x$row_data[[row_index]])
+
+    heatmap_list$row_data <- x$row_data[
+      x$row_data[[row_index]] %in% keep_features,
+    ]
+    heatmap_list$body_matrix <- heatmap_list$body_matrix[keep_features, ]
+  }
+
+  as_heatmap_data(heatmap_list)
 }
 
 ###############################################################################
