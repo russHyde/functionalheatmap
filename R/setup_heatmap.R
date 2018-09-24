@@ -28,13 +28,37 @@ setup_heatmap <- function(x,
     .is_nonempty_list_of_data_frames(x) && "body_data" %in% names(x)
   )
 
-  body_matrix <- as_body_matrix(
-    x$body_data, row_index, column_index, value_index
-  )
+  keep_features <- .get_features_from_heatmap_input(x, row_index)
 
-  as_heatmap_data(
-    list(body_matrix = body_matrix)
-  )
+  body_matrix <- as_body_matrix(
+    x$body_data,
+    row_index, column_index, value_index
+  )[keep_features, ]
+
+  heatmap_list <- list(body_matrix = body_matrix)
+
+  if ("row_data" %in% names(x)) {
+    # add the row data to the heatmap-data, ensureing the row-ordering matches
+    # that for the body-data
+    reordering <- match(keep_features, x$row_data[[row_index]])
+    heatmap_list$row_data <- x$row_data[reordering, ]
+  }
+
+  as_heatmap_data(heatmap_list)
+}
+
+###############################################################################
+
+# helper functions
+
+.get_features_from_heatmap_input <- function(x, row_index) {
+  features <- unique(x$body_data[[row_index]])
+
+  if ("row_data" %in% names(x)) {
+    features <- intersect(features, x$row_data[[row_index]])
+  }
+
+  sort(features)
 }
 
 ###############################################################################
