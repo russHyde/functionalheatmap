@@ -80,3 +80,64 @@ test_that("user can define row, column and value indexes in `setup_heatmap`", {
 })
 
 ###############################################################################
+
+test_that("only features common to the body and row-data are heatmapped", {
+  # row_data features and body_data features are identical and order-matched
+  body1 <- data.frame(
+    feature_id = letters[1:3],
+    sample_id = rep(LETTERS[1:3], each = 3),
+    fitted_value = 1:9
+  )
+
+  rows1 <- data.frame(
+    feature_id = letters[1:3],
+    annotation = c(TRUE, FALSE, TRUE)
+  )
+
+  body1_matrix <- matrix(
+    1:9, nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
+  )
+
+  obj1 <- setup_heatmap(list(body_data = body1, row_data = rows1))
+
+  expect_equal(
+    object = obj1,
+    expected = list(body_matrix = body1_matrix, row_data = rows1),
+    info = paste(
+      "body/row-data should be unfiltered if all features are in both",
+      "body and row-data"
+    )
+  )
+
+  # row_data features and body_data features are identical but disordered
+  body2 <- data.frame(
+    feature_id = letters[3:1],
+    sample_id = rep(LETTERS[1:3], each = 3),
+    fitted_value = 1:9
+  )
+
+  rows2 <- data.frame(
+    feature_id = c("b", "a", "c"),
+    annotation = c(TRUE, FALSE, TRUE)
+  )
+
+  body2_matrix <- matrix(
+    c(3, 2, 1, 6, 5, 4, 9, 8, 7),
+    nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
+  )
+
+  obj2 <- setup_heatmap(list(body_data = body2, row_data = rows2))
+
+  expect_equal(
+    object = obj2,
+    expected = list(body_matrix = body2_matrix, row_data = rows2),
+    info = paste(
+      "body/row-data should be unfiltered if all features are in both",
+      "body and row-data (regardless of their order in the input)"
+    )
+  )
+
+  # row_data features are a subset of body_data features
+
+  # row_data features are a superset of body_data features
+})
