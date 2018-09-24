@@ -16,6 +16,7 @@ Suggests: testthat,
     covr,
     mockery
 Collate:
+    'annotate_heatmap.R'
     'classes.R'
     'data_manipulation.R'
     'data_validity.R'
