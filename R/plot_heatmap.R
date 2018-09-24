@@ -15,7 +15,7 @@
 #' @export
 
 plot_heatmap <- function(x) {
-  if (missing(x) || !is(x, "heatmap_data")) {
+  if (missing(x) || !methods::is(x, "heatmap_data")) {
     stop("`x` should be a defined `heatmap_data` object in `plot_heatmap`")
   }
   do.call(
