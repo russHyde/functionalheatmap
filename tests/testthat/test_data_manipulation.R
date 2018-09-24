@@ -31,3 +31,21 @@ test_that("as_matrix", {
 })
 
 ###############################################################################
+
+test_that("as_body_matrix", {
+  tidy_df1 <- data.frame(
+    my_rows = letters[1:3],
+    my_cols = rep(LETTERS[1:4], each = 3),
+    my_vals = 1:12
+  )
+  matrix1 <- matrix(1:12, nrow = 3, dimnames = list(letters[1:3], LETTERS[1:4]))
+
+  expect_equal(
+    object = as_body_matrix(tidy_df1, "my_rows", "my_cols", "my_vals"),
+    expected = matrix1,
+    info = paste(
+      "convert tidy data-frame to a matrix using specified df-columns to",
+      "index the row/cols of the matrix"
+    )
+  )
+})

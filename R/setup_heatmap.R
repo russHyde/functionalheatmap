@@ -28,12 +28,9 @@ setup_heatmap <- function(x,
     .is_nonempty_list_of_data_frames(x) && "body_data" %in% names(x)
   )
 
-  body_matrix <- tidyr::spread_(
-    x$body_data,
-    value_col = value_index,
-    key_col = column_index
-  ) %>%
-    as_matrix(rowname_col = row_index)
+  body_matrix <- as_body_matrix(
+    x$body_data, row_index, column_index, value_index
+  )
 
   as_heatmap_data(
     list(body_matrix = body_matrix)
