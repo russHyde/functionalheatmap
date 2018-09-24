@@ -133,11 +133,15 @@ test_that("only features common to the body and row-data are heatmapped", {
   expect_equal(
     object = obj2,
     expected = as_heatmap_data(
-      list(body_matrix = body2_matrix, row_data = rows2)
+      list(
+        body_matrix = body2_matrix,
+        row_data = rows2[order(rows2$feature_id), ]
+      )
     ),
     info = paste(
       "body/row-data should be unfiltered if all features are in both",
-      "body and row-data (regardless of their order in the input)"
+      "body and row-data (regardless of their order in the input)",
+      "and the `feature_id`s should be in identical order."
     )
   )
 
