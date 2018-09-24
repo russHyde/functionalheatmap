@@ -95,7 +95,8 @@ test_that("only features common to the body and row-data are heatmapped", {
   )
 
   body1_matrix <- matrix(
-    1:9, nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
+    1:9,
+    nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
   )
 
   obj1 <- setup_heatmap(list(body_data = body1, row_data = rows1))
@@ -179,7 +180,8 @@ test_that("only features common to the body and row-data are heatmapped", {
   )
 
   body4_matrix <- matrix(
-    1:6, nrow = 2, dimnames = list(letters[2:3], LETTERS[1:3])
+    1:6,
+    nrow = 2, dimnames = list(letters[2:3], LETTERS[1:3])
   )
 
   obj4 <- setup_heatmap(list(body_data = body4, row_data = rows1))
@@ -194,5 +196,4 @@ test_that("only features common to the body and row-data are heatmapped", {
       "be filtered down by `setup_heatmap`"
     )
   )
-
 })

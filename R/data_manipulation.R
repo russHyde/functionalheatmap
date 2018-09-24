@@ -8,10 +8,10 @@
 
 as_body_matrix <- function(df, row_index, column_index, value_index) {
   tidyr::spread_(
-      df,
-      value_col = value_index,
-      key_col = column_index
-    ) %>%
+    df,
+    value_col = value_index,
+    key_col = column_index
+  ) %>%
     as_matrix(rowname_col = row_index)
 }
 

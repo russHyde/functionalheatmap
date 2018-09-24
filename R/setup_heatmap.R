@@ -4,7 +4,6 @@
 
 ###############################################################################
 
-
 #' setup_heatmap: defines the data-structures for use in constructing heatmaps
 #'
 #' @param        x             A poly_frame or list of named data-frames. This
@@ -38,7 +37,7 @@ setup_heatmap <- function(x,
 
   heatmap_list <- list(body_matrix = body_matrix)
 
-  if("row_data" %in% names(x)) {
+  if ("row_data" %in% names(x)) {
     # add the row data to the heatmap-data, ensureing the row-ordering matches
     # that for the body-data
     reordering <- match(keep_features, x$row_data[[row_index]])
