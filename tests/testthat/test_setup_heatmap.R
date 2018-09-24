@@ -102,7 +102,9 @@ test_that("only features common to the body and row-data are heatmapped", {
 
   expect_equal(
     object = obj1,
-    expected = list(body_matrix = body1_matrix, row_data = rows1),
+    expected = as_heatmap_data(
+      list(body_matrix = body1_matrix, row_data = rows1)
+    ),
     info = paste(
       "body/row-data should be unfiltered if all features are in both",
       "body and row-data"
@@ -130,14 +132,63 @@ test_that("only features common to the body and row-data are heatmapped", {
 
   expect_equal(
     object = obj2,
-    expected = list(body_matrix = body2_matrix, row_data = rows2),
+    expected = as_heatmap_data(
+      list(body_matrix = body2_matrix, row_data = rows2)
+    ),
     info = paste(
       "body/row-data should be unfiltered if all features are in both",
       "body and row-data (regardless of their order in the input)"
     )
   )
 
-  # row_data features are a subset of body_data features
+  # row_data features are a subset of body_data features - body_data should be
+  # filtered
+  rows3 <- data.frame(
+    feature_id = letters[1:2],
+    annotation = c(TRUE, FALSE)
+  )
 
-  # row_data features are a superset of body_data features
+  body3_matrix <- matrix(
+    c(1:2, 4:5, 7:8),
+    nrow = 2, dimnames = list(letters[1:2], LETTERS[1:3])
+  )
+
+  obj3 <- setup_heatmap(list(body_data = body1, row_data = rows3))
+
+  expect_equal(
+    object = obj3,
+    expected = as_heatmap_data(
+      list(body_matrix = body3_matrix, row_data = rows3)
+    ),
+    info = paste(
+      "row-data has a subset of the body-data features: so body-data should",
+      "be filtered down by `setup_heatmap`"
+    )
+  )
+
+  # row_data features are a superset of body_data features - row_data should be
+  # filtered
+  body4 <- data.frame(
+    feature_id = letters[2:3],
+    sample_id = rep(LETTERS[1:3], each = 2),
+    fitted_value = 1:6
+  )
+
+  body4_matrix <- matrix(
+    1:6, nrow = 2, dimnames = list(letters[2:3], LETTERS[1:3])
+  )
+
+  obj4 <- setup_heatmap(list(body_data = body4, row_data = rows1))
+
+  expect_equal(
+    object = obj4,
+    expected = as_heatmap_data(
+      list(body_matrix = body4_matrix, row_data = rows1[-1, ])
+    ),
+    info = paste(
+      "row-data has a superset of the body-data features: so row-data should",
+      "be filtered down by `setup_heatmap`"
+    )
+  )
+
 })
