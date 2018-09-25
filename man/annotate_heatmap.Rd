@@ -5,7 +5,7 @@
 \title{Add row annotations to a heatmap based on columns from the `row_data` entry
 of a `heatmap_data` object}
 \usage{
-annotate_heatmap(x, row_annotations = NULL)
+annotate_heatmap(x, row_annotations = NULL, row_dots = NULL)
 }
 \arguments{
 \item{x}{A heatmap_data object.}
@@ -13,6 +13,10 @@ annotate_heatmap(x, row_annotations = NULL)
 \item{row_annotations}{Which columns of the `row_data` entry in `x`
 should be used when plotting annotations alongside the rows of the
 heatmap?}
+
+\item{row_dots}{Additional arguments to be passed to
+HeatmapAnnotation for the row-annotations. For example, `show_legend`,
+`col`.}
 }
 \description{
 Add row annotations to a heatmap based on columns from the `row_data` entry

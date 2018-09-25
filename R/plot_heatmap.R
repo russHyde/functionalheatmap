@@ -27,9 +27,12 @@ plot_heatmap <- function(x) {
   )
 
   if ("row_annotations" %in% names(x)) {
-    ra <- ComplexHeatmap::HeatmapAnnotation(
-      x$row_annotations,
-      which = "row"
+    ra <- do.call(
+      ComplexHeatmap::HeatmapAnnotation,
+      append(
+        list(df = x$row_annotations, which = "row"),
+        x$row_dots
+      )
     )
     heatmap <- ComplexHeatmap::add_heatmap(heatmap, ra)
   }
