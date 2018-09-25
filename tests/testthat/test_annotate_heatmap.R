@@ -66,8 +66,48 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
 ###############################################################################
 
 test_that(
-  "row_annotations are added to a plotted heatmap if they are defined", {
-    # pass-through
-    # - how to test this?
+  paste(
+    "if defined, row_annotations and contents of row_dots are added to a",
+    "plotted heatmap"
+  ), {
+    hd1 <- as_heatmap_data(list(
+      body_matrix = matrix(1:12, nrow = 4),
+      row_data = data.frame(
+        foo = c(FALSE, TRUE),
+        bar = 1:4
+      )
+    ))
+
+    m <- mockery::mock(1)
+    testthat::with_mock(
+      HeatmapAnnotation = m, {
+        plot_heatmap(
+          annotate_heatmap(
+            hd1,
+            row_annotations = "foo", row_dots = list(na_col = "red")
+          )
+        )
+      },
+      .env = "ComplexHeatmap"
+    )
+    annotation_args <- mockery::mock_args(m)[[1]]
+
+    expect_equal(
+      annotation_args[[1]],
+      hd1$row_data[, "foo", drop = FALSE],
+      info = paste(
+        "data-frame corresponsing to the cols in the `annotate_heatmap`",
+        "`row_annotations` column(s) is passed to HeatmapAnnotation"
+      )
+    )
+    expect_true(
+      "na_col" %in% names(annotation_args) && annotation_args$na_col == "red",
+      info = paste(
+        "additional args for formatting row-annotations in a heatmap",
+        "(row_dots) are passed through to HeatmapAnnotation()"
+      )
+    )
   }
 )
+
+###############################################################################
