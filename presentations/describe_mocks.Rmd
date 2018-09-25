@@ -1,0 +1,416 @@
+---
+title: "Mock-Tests in R using `mockery`"
+author: "Russ Hyde"
+date: "25 September 2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup
+
+```{r}
+set.seed(1)
+
+pkgs <- c(
+  "ComplexHeatmap",
+  "magrittr",
+  "tidyr",
+  "tibble",
+  "testthat",
+  "mockery",
+  "functionalheatmap"
+)
+
+for (pkg in pkgs) {
+  suppressPackageStartupMessages(
+    library(pkg, character.only = TRUE)
+  )
+}
+```
+
+# Introduction
+
+This document is mostly a recollection aid written while working on a package
+called [`functionalheatmap`](https://github.com/russHyde/functionalheatmap).
+
+While writing that package, some tests were required that were somewhat out
+of my comfort zone. They involved redefining an R function at test-time using
+the `mockery` package. I'll explain why it was necessary to do this after
+a brief intro to my unfinished (and, some might say, superfluous) package.
+
+# Basic use of `functionalheatmap`
+
+I've been writing a wrapper around the
+[
+  `ComplexHeatmap`
+](
+  https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html
+) package that allows the production of heatmaps using incremental steps and
+requires less housekeeping than does the, otherwise superb, `ComplexHeatmap`
+package.
+
+Here's some example data for use in a heatmap:
+
+```{r}
+body_data <- matrix(
+  rnorm(20),
+  nrow = 5, dimnames = list(letters[1:5], LETTERS[1:4])
+)
+
+row_data <- data.frame(
+  foo = c(FALSE, TRUE, FALSE, FALSE, TRUE),
+  bar = 1:5,
+  row.names = letters[1:5]
+)
+```
+
+```{r}
+as.data.frame(body_data)
+```
+
+```{r}
+row_data
+```
+
+Given the above dataset, to produce a heatmap in ComplexHeatmap that had a
+set of row-annotations (my usual use-case) you'd do something like the
+following.
+
+```{r}
+my_heatmap <- ComplexHeatmap::Heatmap(
+  body_data,
+  cluster_columns = FALSE
+)
+
+my_annots <- ComplexHeatmap::HeatmapAnnotation(
+  row_data,
+  which = "row", show_annotation_name = TRUE
+)
+```
+
+```{r, fig.width = 4, fig.height = 4.8}
+my_heatmap + my_annots
+```
+
+A given row of your annotations has to match the corresponding row of the
+heatmap's body.
+
+The package `functionalheatmap` provides some wrapper functions to ensure that
+the rows of the body and annotations match-up. This is helpful if you want to
+make multiple related heatmaps based on different subsets of the main body-data
+matrix or subsets of the annotations.
+
+To plot a sub-heatmap for just those features where `foo` is false in
+ComplexHeatmap you would do the following:
+
+```{r}
+# housekeeping variable
+keep_rows <- which(!row_data$foo)
+
+new_heatmap <- ComplexHeatmap::Heatmap(
+  body_data[keep_rows, ],
+  cluster_columns = FALSE
+)
+
+new_annots <- ComplexHeatmap::HeatmapAnnotation(
+  row_data[keep_rows, ],
+  which = "row", show_annotation_name = TRUE
+)
+
+new_heatmap + new_annots
+```
+
+In `functionalheatmap` the whole dataset is passed into a pipeline. You can
+filter the contents of either the heatmap body or the row-data and it will
+match everything up fine.
+
+The input data looks slightly different than the matrix that is passed to
+ComplexHeatmap. We make `tidy` versions of the input data so that tidyverse
+verbs (filter / select etc) can be applied to them.
+
+```{r}
+tidy_body_df <- body_data %>%
+  tibble::as_tibble(rownames = "feature_id") %>%
+  tidyr::gather(key = "sample_id", value = "fitted_value", -feature_id)
+
+tidy_row_df <- tibble::rownames_to_column(row_data, "feature_id")
+```
+
+```{r}
+# we've pulled the matrix indices into a data-frame
+head(tidy_body_df)
+```
+
+To plot the original heatmap:
+
+```{r}
+list(
+  body_data = tidy_body_df,
+  row_data = tidy_row_df
+) %>%
+  setup_heatmap() %>%
+  format_heatmap(
+    cluster_columns = FALSE
+  ) %>%
+  annotate_heatmap(
+    row_annotations = c("foo", "bar"),
+    row_dots = list(show_annotation_name = TRUE)
+  ) %>%
+  plot_heatmap()
+```
+
+... and to plot the not-foos, do this:
+
+```{r}
+list(
+  body_data = tidy_body_df,
+  row_data = dplyr::filter(tidy_row_df, !foo)
+) %>%
+  setup_heatmap() %>%
+  format_heatmap(
+    cluster_columns = FALSE
+  ) %>%
+  annotate_heatmap(
+    row_annotations = c("foo", "bar"),
+    row_dots = list(show_annotation_name = TRUE)
+  ) %>%
+  plot_heatmap()
+```
+
+Or indeed, write a pipeline to return the heatmap data-structure:
+
+```{r}
+heatmap_pipeline <- function(x) {
+  setup_heatmap(x) %>%
+    format_heatmap(
+      cluster_columns = FALSE
+    ) %>%
+    annotate_heatmap(
+      row_annotations = c("foo", "bar"),
+      row_dots = list(show_annotation_name = TRUE)
+    )
+}
+```
+
+... and then pump your easily filtered dataset into it
+
+```{r}
+list(
+  body_data = tidy_body_df,
+  row_data = dplyr::filter(tidy_row_df, !foo)
+) %>%
+  heatmap_pipeline() %>%
+  plot_heatmap()
+```
+
+Using [`polyply`](https://github.com/russHyde/polyply) you can get away with
+having just a single heatmap dataset. I won't go into how that works, but the
+above code would look like:
+
+```
+# -- not ran -- #
+
+# globally-useful heatmap dataset:
+library(polyply)
+heat_frames <- poly_frame(
+  body_data = tidy_body_df,
+  row_data = tidy_row_df
+)
+
+heat_frames %>%
+  # filter based on `foo` in `row_data`
+  activate(row_data) %>% filter(!foo) %>%
+  # run the functionalheatmap pipeline and plot
+  heatmap_pipeline() %>%
+  plot_heatmap()
+```
+
+In short, `functionalheatmap` allows me to abstract away the functions involved
+in making and plotting a heatmap using `ComplexHeatmap`. This has helped
+deduplicate and de-`temp-variable`-enate some of my analysis scripts
+considerably.
+
+# Use of `mockery::mock()` in `functionalheatmap` tests
+
+An aim of `functionalheatmap` was to be able to incrementally change the
+formatting of a heatmap[^1]. For example, if you had already passed some data
+through the `heatmap_pipeline` described above, but on calling `plot_heatmap`
+you decided the title needed changing, or the body-colours were all wrong
+you should be able to do this:
+
+```
+# -- not ran -- #
+heatmap1 <- blep %>% blep %>% blep %>% heatmap_pipeline()
+
+plot_heatmap(heatmap1)
+
+# YUCK!
+
+heatmap2 <- format_heatmap(heatmap1, na_col = "purple", some_other_formats ...)
+
+plot_heatmap(heatmap2)
+
+# LESS YUCK!
+```
+
+... and the formatting you provide should add to or supplant the existing
+formatting arguments.
+
+All these formatting flags are stored in the data-structure that is passed
+around by the functions in `functionalheatmap`. We still use the Heatmap
+plotting code from ComplexHeatmap - we only pass `Heatmap()` the formatting
+flags in the final `plot_heatmap` step.
+
+So you can set the formatting flags in one function and they exert their effect
+when used in another function.
+
+At one point while writing this package I was unsure how to go about testing
+that formatting-flags that were set in `format_heatmap` were doing what they
+should. I don't even know _how_ to unit (or otherwise) test the output of a
+plotting function. So all I wanted to know was that when a formatting flag is
+set in the `format_heatmap` call, that flag is set in the subsequent call to
+`Heatmap()` made by `plot_heatmap`.
+
+So I found out about the package
+[`mockery`](https://cran.r-project.org/web/packages/mockery/index.html).
+
+The idea is pretty cool. I'd heard of mocks and stubs in passing but had never
+used them before. Basically you create a 'mock-object' that behaves _in some
+way_ like another object (which we'll name the 'model' cos I was a genetics
+student [once](https://en.wikipedia.org/wiki/Mimicry)) and inject that
+mock-object into your code. Suppose your doing this within a unit-test, then at
+that point where the test-code should use the model-object you actually call
+the mock-object.
+
+In `R`, functions are objects, so we can create mock functions. All those
+filthy side-effecting functions that touch databases or plot figures or modify
+stuff out-of-environment or write to files: they could be replaced with mock
+functions in your test code.
+
+In the use-case described above:
+
+- we have a heatmap-data object,
+
+- it is passed through the function `format_heatmap`
+
+    - which sets the `na_col` to `"purple"` for some god-forsaken reason
+
+- then the output from that is passed to `plot_heatmap`
+
+    - and we want to know whether the `na_col` is `"purple"` when
+    `plot_heatmap` calls `ComplexHeatmap::Heatmap()`
+
+Evidently, the 'filthy side-effecting' function here is `Heatmap()`. So we will
+make a mock `Heatmap` function to help test this use-case.
+
+# Using `mockery` to mock a function
+
+We use `mock` to define a mock function:
+
+```{r}
+mock_fn <- mock(2)
+```
+
+As set-up, `mock_fn` can be used once (since there's only one argument and we
+haven't played with it's `cycle` argument (not discussed)) and when it is
+called it will return the value 2.
+
+Then we use `testthat::with_mock` to both
+
+- state which function we want to replace with our mock-function `mock_fn`;
+
+- and write an expression wherein the model-function would be called
+
+Here we want to replace the model-function `Heatmap` and we want to check what
+happens when `Heatmap()` is called within `plot_heatmap`. The call to
+`with_mock` should look like this:
+
+```
+# -- not ran -- #
+testthat::with_mock(
+  # replace the model-function `Heatmap` with the mock-function `mock_fn`
+  Heatmap = mock_fn, {
+    # define an expression wherein the model-function would normally be called
+    plot_heatmap(some_input_data)
+  },
+  # you want to do the replacement in the ComplexHeatmap namespace
+  .env = "ComplexHeatmap"
+)
+```
+
+Let's make some input data so we can check everything works as expected:
+
+```{r}
+my_heatmap_data <- list(body_data = tidy_body_df) %>%
+  setup_heatmap() %>%
+  format_heatmap(na_col = "purple")
+```
+
+If everything works, the `na_col` parameter in `Heatmap()` should be set to
+`purple`.
+
+```{r}
+testthat::with_mock(
+  Heatmap = mock_fn, {
+    plot_heatmap(my_heatmap_data)
+  },
+  .env = "ComplexHeatmap"
+)
+```
+
+The value 2 is returned because Heatmap() is the last thing evaluated in
+plot_heatmap(), and our mock-function was set-up to return 2.
+
+So what do we test?
+
+The mock-function we set up actually stores some information about the
+function call and the argument values used when it was called in place of
+Heatmap().
+
+```{r}
+mock_args(mock_fn)
+```
+
+```{r}
+mock_calls(mock_fn)
+```
+
+So in an automated test, we can check that `na_col` was set to `purple` as
+follows:
+
+```{r}
+heatmap_args <- mock_args(mock_fn)
+```
+
+```{r, error=TRUE}
+testthat::expect_true(
+  "na_col" %in% names(heatmap_args[[1]]) &&
+    heatmap_args[[1]]$na_col == "orange"
+)
+```
+
+Ack! That's what happens when your test fails. Sorry, `na_col` was supposed to
+be purple:
+
+```{r}
+testthat::expect_true(
+  "na_col" %in% names(heatmap_args[[1]]) &&
+    heatmap_args[[1]]$na_col == "purple"
+)
+```
+
+Silence is golden.
+
+There's some neater `expect_*` functions for working with mocks within mockery
+(`expect_called`, `expect_call`, `expect_args`). They didn't quite hit the mark
+for the test I needed though.
+
+So I found `mockery` really helpful. And now, thinking back, I feel pretty bad
+about all those tests I once wrote that hit the EBI database servers .....
+
+[^1]: still working on that
