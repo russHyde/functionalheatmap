@@ -16,7 +16,7 @@ heatmap?}
 
 \item{row_dots}{Additional arguments to be passed to
 HeatmapAnnotation for the row-annotations. For example, `show_legend`,
-`col`.}
+`col`. Check the docs for HeatmapAnnotation for parameter names.}
 }
 \description{
 Add row annotations to a heatmap based on columns from the `row_data` entry
