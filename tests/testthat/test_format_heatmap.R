@@ -96,8 +96,8 @@ test_that("args set by format_heatmap pass through to a Heatmap() call", {
 
 ###############################################################################
 
-test_that("`split` can be defined using columns of `row_data`", {
-  hd1 <- as_heatmap_data(
+.setup_4x3_heatmap_data <- function() {
+  as_heatmap_data(
     list(
       body_matrix = matrix(
         1:12,
@@ -108,6 +108,12 @@ test_that("`split` can be defined using columns of `row_data`", {
       )
     )
   )
+}
+
+###############################################################################
+
+test_that("`split` can be defined using columns of `row_data`", {
+  hd1 <- .setup_4x3_heatmap_data()
 
   expect_equal(
     object = format_heatmap(hd1, split = "my_split")$formats$split,
@@ -120,6 +126,35 @@ test_that("`split` can be defined using columns of `row_data`", {
   expect_error(
     object = format_heatmap(hd1, split = "not a column"),
     info = "`split` columns should be present in the `row_data` data-frame"
+  )
+})
+
+###############################################################################
+
+test_that("format_heatmap can be used multiple times in one pipeline", {
+  hd1 <- .setup_4x3_heatmap_data()
+
+  f1 <- format_heatmap(hd1, na_col = "black", row_title = "my-rows")
+
+  f2 <- format_heatmap(f1, na_col = "purple", column_title = "my_columns")
+
+  expect_true(
+    object = (
+      !"column_title" %in% names(f1$formats) &&
+        f2$formats$column_title == "my_columns"
+    ),
+    info = "adding a new formatting flag in a second format_heatmap call"
+  )
+
+  expect_equal(
+    object = f2$formats$row_title,
+    expected = f2$formats$row_title,
+    info = "format_heatmap should not overwrite unstated formatting flags"
+  )
+
+  expect_true(
+    object = f1$formats$na_col != f2$formats$na_col,
+    info = "format_heatmap can overwrite a named formatting flag"
   )
 })
 

@@ -11,9 +11,9 @@
 #' @param        x             A heatmap_data object. As returned by
 #'   `setup_heatmap`.
 #' @param        ...           Any user-specific formatting flags to be passed
-#'   to Heatmap(). An exception is `split`: if this flag is set it should
+#'   to `Heatmap()`. An exception is `split`: if this flag is set it should
 #'   define a vector of column-names from the `row_data` part of `x`, these
-#'   columns are then extracted and passed to Heatmap().
+#'   columns are then extracted and passed to `Heatmap()`.
 #'
 #' @importFrom   methods       is
 #' @export
@@ -25,12 +25,20 @@ format_heatmap <- function(x, ...) {
 
   dots <- list(...)
 
-  formats <- .get_default_formatting() %>%
-    .append_format_args(dots) %>%
+  initial_formats <- if ("formats" %in% names(x)) {
+    x$formats
+  } else {
+    .get_default_formatting()
+  }
+
+  formats <- initial_formats %>%
+    .append_or_update(dots) %>%
     .append_split_args_if_defined(x, dots$split)
 
   x %>%
-    append(list(formats = formats)) %>%
+    .append_or_update(
+      list(formats = formats)
+    ) %>%
     as_heatmap_data()
 }
 
@@ -45,9 +53,9 @@ format_heatmap <- function(x, ...) {
 
 ###############################################################################
 
-.append_format_args <- function(current_args, new_args) {
-  non_updated_args <- setdiff(names(current_args), names(new_args))
-  append(new_args, current_args[non_updated_args])
+.append_or_update <- function(current_list, new_list) {
+  non_updated_args <- setdiff(names(current_list), names(new_list))
+  append(new_list, current_list[non_updated_args])
 }
 
 .get_split_from_row_data <- function(x, split_columns) {
@@ -62,7 +70,7 @@ format_heatmap <- function(x, ...) {
   if (is.null(split_columns)) {
     return(current_args)
   }
-  .append_format_args(
+  .append_or_update(
     current_args,
     list(split = .get_split_from_row_data(heatmap_data, split_columns))
   )
