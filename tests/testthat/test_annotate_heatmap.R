@@ -151,7 +151,7 @@ test_that(
       annotation_args[[1]],
       hmd1$row_data[, "foo", drop = FALSE],
       info = paste(
-        "data-frame corresponsing to the cols in the `annotate_heatmap`",
+        "data-frame corresponding to the cols in the `annotate_heatmap`",
         "`row_annotations` column(s) is passed to HeatmapAnnotation"
       )
     )
@@ -166,3 +166,57 @@ test_that(
 )
 
 ###############################################################################
+
+test_that(
+  paste(
+    "a HeatmapAnnotation object is built from the above-the-heatmap",
+    "annotation-data"
+  ), {
+    hmd1 <- get_hmd1()
+
+    hmd_with_zig <- annotate_heatmap(
+      hmd1,
+      top_annotations = "zig",
+      top_dots = list(show_legend = FALSE)
+    )
+
+    expect_is(
+      .get_top_annotation_object(hmd_with_zig),
+      "HeatmapAnnotation"
+    )
+    expect_is(
+      plot_heatmap(hmd_with_zig),
+      "Heatmap",
+      info = "plotting a heatmap_data should return a Heatmap or HeatmapList"
+    )
+
+    # Values in the mock annotation object aren't used in the test
+    ha <- HeatmapAnnotation(data.frame(zig = 1:3))
+    m <- mockery::mock(ha)
+
+    testthat::with_mock(
+      HeatmapAnnotation = m,
+      plot_heatmap(hmd_with_zig),
+      .env = "ComplexHeatmap"
+    )
+    annotation_args <- mockery::mock_args(m)[[1]]
+
+    expect_equal(
+      annotation_args[[1]],
+      hmd1$column_data[, "zig", drop = FALSE],
+      info = paste(
+        "data-frame corresponding to the tracks in the `annotate_heatmap`",
+        "`top_annotations` argument is passed to HeatmapAnnotation"
+      )
+    )
+
+    expect_true(
+      "show_legend" %in% names(annotation_args)
+      && !annotation_args$show_legend,
+      info = paste(
+        "additional args for formatting row-annotations in a heatmap",
+        "(row_dots) are passed through to HeatmapAnnotation()"
+      )
+    )
+  }
+)
