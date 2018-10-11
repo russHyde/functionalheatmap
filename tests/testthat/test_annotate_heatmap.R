@@ -18,28 +18,41 @@ test_that("`annotate_heatmap` fails with invalid input", {
 
 ###############################################################################
 
-test_that("row_annotation data-frame can be appended to heatmap_data", {
-  hmd1 <- as_heatmap_data(
+get_hmd1 <- function() {
+  as_heatmap_data(
     list(
       body_matrix = matrix(
         1:12,
         nrow = 4, dimnames = list(letters[1:4], LETTERS[1:3])
       ),
       row_data = data.frame(
-        sample_id = letters[1:4],
-        foo = c(TRUE, FALSE, FALSE, TRUE)
+        feature_id = letters[1:4],
+        foo = c(TRUE, FALSE, FALSE, TRUE),
+        bar = 1:4
       )
     )
   )
+}
+
+###############################################################################
+
+test_that("annotate_heatmap pass-through", {
+  hmd1 <- get_hmd1()
 
   expect_equal(
     object = annotate_heatmap(hmd1),
     expected = hmd1,
     info = paste(
-      "unless annotations are specified, annotate_heatmap just returns the",
-      "input"
+      "Unless annotation tracks are specified ([row|top|bottom]_annotations),",
+      "annotate_heatmap just returns the input"
     )
   )
+})
+
+###############################################################################
+
+test_that("row_annotation data-frame can be appended to heatmap_data", {
+  hmd1 <- get_hmd1()
 
   expect_error(
     object = annotate_heatmap(hmd1, row_annotations = "not a row_data track"),
@@ -70,20 +83,14 @@ test_that(
     "if defined, row_annotations and contents of row_dots are added to a",
     "plotted heatmap"
   ), {
-    hd1 <- as_heatmap_data(list(
-      body_matrix = matrix(1:12, nrow = 4),
-      row_data = data.frame(
-        foo = c(FALSE, TRUE),
-        bar = 1:4
-      )
-    ))
+    hmd1 <- get_hmd1()
 
     m <- mockery::mock(1)
     testthat::with_mock(
       HeatmapAnnotation = m, {
         plot_heatmap(
           annotate_heatmap(
-            hd1,
+            hmd1,
             row_annotations = "foo", row_dots = list(na_col = "red")
           )
         )
@@ -94,7 +101,7 @@ test_that(
 
     expect_equal(
       annotation_args[[1]],
-      hd1$row_data[, "foo", drop = FALSE],
+      hmd1$row_data[, "foo", drop = FALSE],
       info = paste(
         "data-frame corresponsing to the cols in the `annotate_heatmap`",
         "`row_annotations` column(s) is passed to HeatmapAnnotation"
