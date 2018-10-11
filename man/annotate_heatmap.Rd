@@ -5,7 +5,8 @@
 \title{Add row annotations to a heatmap based on columns from the `row_data` entry
 of a `heatmap_data` object}
 \usage{
-annotate_heatmap(x, row_annotations = NULL, row_dots = NULL)
+annotate_heatmap(x, row_annotations = NULL, row_dots = NULL,
+  top_annotations = NULL)
 }
 \arguments{
 \item{x}{A heatmap_data object.}

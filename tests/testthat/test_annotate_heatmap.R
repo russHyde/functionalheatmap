@@ -29,6 +29,11 @@ get_hmd1 <- function() {
         feature_id = letters[1:4],
         foo = c(TRUE, FALSE, FALSE, TRUE),
         bar = 1:4
+      ),
+      column_data = data.frame(
+        sample_id = LETTERS[1:3],
+        zig = c(TRUE, FALSE, FALSE),
+        zag = c(20, 10, 50)
       )
     )
   )
@@ -73,6 +78,49 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
     object = obj$row_annotation,
     expected = data.frame(foo = c(TRUE, FALSE, FALSE, TRUE)),
     info = "single column from row-data used as row_annotation data-frame"
+  )
+})
+
+###############################################################################
+
+test_that("top_annotation data-frame can be appended to heatmap_data", {
+  hmd1 <- get_hmd1()
+  hmd_no_column_data <- as_heatmap_data(
+    get_hmd1()[c("body_matrix", "row_data")]
+  )
+
+  expect_is(
+    annotate_heatmap(hmd1, top_annotations = "zig"),
+    class = "heatmap_data",
+    info = paste(
+      "After top-annotations are added, the output should still be a",
+      "`heatmap_data` object"
+    )
+  )
+
+  expect_error(
+    annotate_heatmap(hmd1, top_annotations = "not_a_track_in_column_data"),
+    info = paste(
+      "Any tracks to be added to the top_annotations should be present in the",
+      "column_data data-frame"
+    )
+  )
+
+  expect_error(
+    annotate_heatmap(hmd_no_column_data, top_annotations = "zig"),
+    info = paste(
+      "`top_annotations` can't be added to a heatmap if there is no",
+      "`column_data` entry that defines the relevant data"
+    )
+  )
+
+  expect_equal(
+    object = annotate_heatmap(hmd1, top_annotations = "zig")$top_annotation,
+    expected = hmd1$column_data["zig"],
+    info = paste(
+      "the top_annotation data should equal the corresponding",
+      "sub-data-frame of column_data"
+    )
   )
 })
 
