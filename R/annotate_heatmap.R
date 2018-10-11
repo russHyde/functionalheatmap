@@ -43,15 +43,29 @@ annotate_heatmap <- function(x,
 }
 
 .append_row_annotations <- function(x, row_annotations = NULL) {
-  if (!is.null(row_annotations)) {
-    x$row_annotations <- x$row_data[row_annotations]
-  }
-  x
+  .append_to_heatmap_data_by_column(
+    x, row_annotations, "row_data", "row_annotations"
+  )
 }
 
 .append_top_annotations <- function(x, top_annotations = NULL) {
-  if (!is.null(top_annotations)) {
-    x$top_annotations <- x$column_data[top_annotations]
+  .append_to_heatmap_data_by_column(
+    x, top_annotations, "column_data", "top_annotations"
+  )
+}
+
+###############################################################################
+
+.append_to_heatmap_data_by_column <- function(x,
+                                              annotation_track_names = NULL,
+                                              annotation_df_name = NULL,
+                                              output_df_name = NULL) {
+  if (!is.null(annotation_track_names)) {
+    stopifnot(
+      annotation_df_name %in% names(x) &&
+        is.data.frame(x[[annotation_df_name]])
+    )
+    x[[output_df_name]] <- x[[annotation_df_name]][annotation_track_names]
   }
   x
 }
