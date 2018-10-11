@@ -11,9 +11,9 @@ format_heatmap(x, ...)
 `setup_heatmap`.}
 
 \item{...}{Any user-specific formatting flags to be passed
-to Heatmap(). An exception is `split`: if this flag is set it should
+to `Heatmap()`. An exception is `split`: if this flag is set it should
 define a vector of column-names from the `row_data` part of `x`, these
-columns are then extracted and passed to Heatmap().}
+columns are then extracted and passed to `Heatmap()`.}
 }
 \description{
 format_heatmap
