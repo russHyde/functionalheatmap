@@ -6,7 +6,7 @@
 of a `heatmap_data` object}
 \usage{
 annotate_heatmap(x, row_annotations = NULL, row_dots = NULL,
-  top_annotations = NULL)
+  top_annotations = NULL, top_dots = NULL)
 }
 \arguments{
 \item{x}{A heatmap_data object.}

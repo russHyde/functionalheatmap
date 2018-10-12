@@ -22,7 +22,8 @@
 annotate_heatmap <- function(x,
                              row_annotations = NULL,
                              row_dots = NULL,
-                             top_annotations = NULL) {
+                             top_annotations = NULL,
+                             top_dots = NULL) {
   if (!methods::is(x, "heatmap_data")) {
     stop("`x` should be a `heatmap_data` object in `annotate_heatmap`")
   }
@@ -30,7 +31,8 @@ annotate_heatmap <- function(x,
   x %>%
     .append_row_annotations(row_annotations) %>%
     .append_row_dots(row_dots) %>%
-    .append_top_annotations(top_annotations)
+    .append_top_annotations(top_annotations) %>%
+    .append_top_dots(top_dots)
 }
 
 ###############################################################################
@@ -38,6 +40,13 @@ annotate_heatmap <- function(x,
 .append_row_dots <- function(x, row_dots = NULL) {
   if (!is.null(row_dots)) {
     x$row_dots <- row_dots
+  }
+  x
+}
+
+.append_top_dots <- function(x, dots = NULL) {
+  if (!is.null(dots)) {
+    x$top_dots <- dots
   }
   x
 }
