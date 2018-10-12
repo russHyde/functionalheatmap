@@ -11,9 +11,13 @@
 #' @param        row_annotations   Which columns of the `row_data` entry in `x`
 #'   should be used when plotting annotations alongside the rows of the
 #'   heatmap?
-#' @param        row_dots      Additional arguments to be passed to
-#'   HeatmapAnnotation for the row-annotations. For example, `show_legend`,
-#'   `col`. Check the docs for HeatmapAnnotation for parameter names.
+#' @param        top_annotations   Which columns of the `column_data` entry in
+#'   `x` should be used when plotting annotations above the heatmap?
+#' @param        row_dots,top_dots   Additional arguments to be passed to
+#'   `ComplexHeatmap::HeatmapAnnotation` for the next-to-the-heatmap
+#'   (row_dots) and above-the-heatmap (top_dots) annotations. For example,
+#'   `show_legend`, `col`. Check the docs for `HeatmapAnnotation` for parameter
+#'   names.
 #'
 #' @importFrom   magrittr      %>%
 #' @importFrom   methods       is
