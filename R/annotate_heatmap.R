@@ -30,40 +30,19 @@ annotate_heatmap <- function(x,
 
   x %>%
     .append_row_annotations(row_annotations) %>%
-    .append_row_dots(row_dots) %>%
     .append_top_annotations(top_annotations) %>%
-    .append_top_dots(top_dots)
+    .append_argument_list(arg_list_name = "row_dots", arg_list = row_dots) %>%
+    .append_argument_list(arg_list_name = "top_dots", arg_list = top_dots)
 }
 
 ###############################################################################
 
-.append_row_dots <- function(x, row_dots = NULL) {
-  if (!is.null(row_dots)) {
-    x$row_dots <- row_dots
+.append_argument_list <- function(x, arg_list_name = NULL, arg_list = NULL) {
+  if (!is.null(arg_list)) {
+    x[[arg_list_name]] <- arg_list
   }
   x
 }
-
-.append_top_dots <- function(x, dots = NULL) {
-  if (!is.null(dots)) {
-    x$top_dots <- dots
-  }
-  x
-}
-
-.append_row_annotations <- function(x, row_annotations = NULL) {
-  .append_to_heatmap_data_by_column(
-    x, row_annotations, "row_data", "row_annotations"
-  )
-}
-
-.append_top_annotations <- function(x, top_annotations = NULL) {
-  .append_to_heatmap_data_by_column(
-    x, top_annotations, "column_data", "top_annotations"
-  )
-}
-
-###############################################################################
 
 .append_to_heatmap_data_by_column <- function(x,
                                               annotation_track_names = NULL,
@@ -77,6 +56,20 @@ annotate_heatmap <- function(x,
     x[[output_df_name]] <- x[[annotation_df_name]][annotation_track_names]
   }
   x
+}
+
+###############################################################################
+
+.append_row_annotations <- function(x, row_annotations = NULL) {
+  .append_to_heatmap_data_by_column(
+    x, row_annotations, "row_data", "row_annotations"
+  )
+}
+
+.append_top_annotations <- function(x, top_annotations = NULL) {
+  .append_to_heatmap_data_by_column(
+    x, top_annotations, "column_data", "top_annotations"
+  )
 }
 
 ###############################################################################
