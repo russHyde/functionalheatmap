@@ -29,6 +29,11 @@ get_hmd1 <- function() {
         feature_id = letters[1:4],
         foo = c(TRUE, FALSE, FALSE, TRUE),
         bar = 1:4
+      ),
+      column_data = data.frame(
+        sample_id = LETTERS[1:3],
+        zig = c(TRUE, FALSE, FALSE),
+        zag = c(20, 10, 50)
       )
     )
   )
@@ -78,6 +83,49 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
 
 ###############################################################################
 
+test_that("top_annotation data-frame can be appended to heatmap_data", {
+  hmd1 <- get_hmd1()
+  hmd_no_column_data <- as_heatmap_data(
+    get_hmd1()[c("body_matrix", "row_data")]
+  )
+
+  expect_is(
+    annotate_heatmap(hmd1, top_annotations = "zig"),
+    class = "heatmap_data",
+    info = paste(
+      "After top-annotations are added, the output should still be a",
+      "`heatmap_data` object"
+    )
+  )
+
+  expect_error(
+    annotate_heatmap(hmd1, top_annotations = "not_a_track_in_column_data"),
+    info = paste(
+      "Any tracks to be added to the top_annotations should be present in the",
+      "column_data data-frame"
+    )
+  )
+
+  expect_error(
+    annotate_heatmap(hmd_no_column_data, top_annotations = "zig"),
+    info = paste(
+      "`top_annotations` can't be added to a heatmap if there is no",
+      "`column_data` entry that defines the relevant data"
+    )
+  )
+
+  expect_equal(
+    object = annotate_heatmap(hmd1, top_annotations = "zig")$top_annotation,
+    expected = hmd1$column_data["zig"],
+    info = paste(
+      "the top_annotation data should equal the corresponding",
+      "sub-data-frame of column_data"
+    )
+  )
+})
+
+###############################################################################
+
 test_that(
   paste(
     "if defined, row_annotations and contents of row_dots are added to a",
@@ -103,7 +151,7 @@ test_that(
       annotation_args[[1]],
       hmd1$row_data[, "foo", drop = FALSE],
       info = paste(
-        "data-frame corresponsing to the cols in the `annotate_heatmap`",
+        "data-frame corresponding to the cols in the `annotate_heatmap`",
         "`row_annotations` column(s) is passed to HeatmapAnnotation"
       )
     )
@@ -118,3 +166,57 @@ test_that(
 )
 
 ###############################################################################
+
+test_that(
+  paste(
+    "a HeatmapAnnotation object is built from the above-the-heatmap",
+    "annotation-data"
+  ), {
+    hmd1 <- get_hmd1()
+
+    hmd_with_zig <- annotate_heatmap(
+      hmd1,
+      top_annotations = "zig",
+      top_dots = list(show_legend = FALSE)
+    )
+
+    expect_is(
+      .get_top_annotation_object(hmd_with_zig),
+      "HeatmapAnnotation"
+    )
+    expect_is(
+      plot_heatmap(hmd_with_zig),
+      "Heatmap",
+      info = "plotting a heatmap_data should return a Heatmap or HeatmapList"
+    )
+
+    # Values in the mock annotation object aren't used in the test
+    ha <- HeatmapAnnotation(data.frame(zig = 1:3))
+    m <- mockery::mock(ha)
+
+    testthat::with_mock(
+      HeatmapAnnotation = m,
+      plot_heatmap(hmd_with_zig),
+      .env = "ComplexHeatmap"
+    )
+    annotation_args <- mockery::mock_args(m)[[1]]
+
+    expect_equal(
+      annotation_args[[1]],
+      hmd1$column_data[, "zig", drop = FALSE],
+      info = paste(
+        "data-frame corresponding to the tracks in the `annotate_heatmap`",
+        "`top_annotations` argument is passed to HeatmapAnnotation"
+      )
+    )
+
+    expect_true(
+      "show_legend" %in% names(annotation_args)
+      && !annotation_args$show_legend,
+      info = paste(
+        "additional args for formatting row-annotations in a heatmap",
+        "(row_dots) are passed through to HeatmapAnnotation()"
+      )
+    )
+  }
+)

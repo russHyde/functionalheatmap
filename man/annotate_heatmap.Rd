@@ -5,7 +5,8 @@
 \title{Add row annotations to a heatmap based on columns from the `row_data` entry
 of a `heatmap_data` object}
 \usage{
-annotate_heatmap(x, row_annotations = NULL, row_dots = NULL)
+annotate_heatmap(x, row_annotations = NULL, row_dots = NULL,
+  top_annotations = NULL, top_dots = NULL)
 }
 \arguments{
 \item{x}{A heatmap_data object.}
@@ -14,9 +15,14 @@ annotate_heatmap(x, row_annotations = NULL, row_dots = NULL)
 should be used when plotting annotations alongside the rows of the
 heatmap?}
 
-\item{row_dots}{Additional arguments to be passed to
-HeatmapAnnotation for the row-annotations. For example, `show_legend`,
-`col`. Check the docs for HeatmapAnnotation for parameter names.}
+\item{row_dots, top_dots}{Additional arguments to be passed to
+`ComplexHeatmap::HeatmapAnnotation` for the next-to-the-heatmap
+(row_dots) and above-the-heatmap (top_dots) annotations. For example,
+`show_legend`, `col`. Check the docs for `HeatmapAnnotation` for parameter
+names.}
+
+\item{top_annotations}{Which columns of the `column_data` entry in
+`x` should be used when plotting annotations above the heatmap?}
 }
 \description{
 Add row annotations to a heatmap based on columns from the `row_data` entry
