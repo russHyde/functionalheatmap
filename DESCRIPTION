@@ -21,6 +21,7 @@ Collate:
     'data_manipulation.R'
     'data_validity.R'
     'format_heatmap.R'
+    'to_complex_heatmap_object.R'
     'plot_heatmap.R'
     'setup_heatmap.R'
 Imports: dplyr,
