@@ -7,8 +7,7 @@
 .get_row_annotation_object <- function(x) {
   stopifnot(is(x, "heatmap_data"))
 
-  # TODO: The commented line kills some tests - work out why
-  # stopifnot("row_annotations" %in% names(x) && "row_dots" %in% names(x))
+  stopifnot("row_annotations" %in% names(x))
 
   do.call(
     ComplexHeatmap::HeatmapAnnotation,

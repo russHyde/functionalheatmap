@@ -31,6 +31,13 @@ test_that("HeatmapAnnotation object can be made for the row-annotations", {
   hmd1 <- get_hmd1()
   hmd_with_foo <- annotate_heatmap(hmd1, row_annotations = "foo")
 
+  expect_error(
+    object = .get_row_annotation_object(hmd1),
+    info = paste(
+      "If no row-annotations are specified by the user, a HeatmapAnnotation",
+      "object for the rows can't be constructed"
+    )
+  )
   expect_is(
     object = .get_row_annotation_object(hmd_with_foo),
     "HeatmapAnnotation"
