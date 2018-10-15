@@ -29,19 +29,29 @@ setup_heatmap <- function(x,
   )
 
   keep_features <- .get_features_from_heatmap_input(x, row_index)
+  keep_samples <- .get_samples_from_heatmap_input(x, column_index)
 
   body_matrix <- as_body_matrix(
     x$body_data,
     row_index, column_index, value_index
-  )[keep_features, ]
+  )[keep_features, keep_samples]
 
-  heatmap_list <- list(body_matrix = body_matrix)
+  heatmap_list <- list(
+    body_matrix = body_matrix
+  )
 
   if ("row_data" %in% names(x)) {
     # add the row data to the heatmap-data, ensureing the row-ordering matches
     # that for the body-data
     reordering <- match(keep_features, x$row_data[[row_index]])
     heatmap_list$row_data <- x$row_data[reordering, ]
+  }
+
+  if ("column_data" %in% names(x)) {
+    # order of the 'samples' in the column_data data-frame should determine
+    # the order of the samples in the resulting heatmap
+    reordering <- match(keep_samples, x$column_data[[column_index]])
+    heatmap_list$column_data <- x$column_data[reordering, ]
   }
 
   as_heatmap_data(heatmap_list)
@@ -59,6 +69,17 @@ setup_heatmap <- function(x,
   }
 
   sort(features)
+}
+
+.get_samples_from_heatmap_input <- function(x, column_index) {
+  samples <- unique(x$body_data[[column_index]])
+
+  if ("column_data" %in% names(x)) {
+    # ensure smaple-ordering is as specified by the column-data
+    samples <- intersect(x$column_data[[column_index]], samples)
+  }
+
+  samples
 }
 
 ###############################################################################
