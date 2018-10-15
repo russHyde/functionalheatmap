@@ -197,3 +197,103 @@ test_that("only features common to the body and row-data are heatmapped", {
     )
   )
 })
+
+###############################################################################
+
+test_that("only samples common to the body and column-data are heatmapped", {
+  body1 <- data.frame(
+    feature_id = letters[1:3],
+    sample_id = rep(LETTERS[1:3], each = 3),
+    fitted_value = 1:9
+  )
+
+  columns1 <- data.frame(
+    sample_id = LETTERS[1:3],
+    some_annot = c(TRUE, TRUE, FALSE)
+  )
+
+  body1_matrix <- matrix(
+    1:9,
+    nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
+  )
+
+  obj1 <- setup_heatmap(list(body_data = body1, column_data = columns1))
+
+  expect_equal(
+    object = obj1,
+    expected = as_heatmap_data(
+      list(body_matrix = body1_matrix, column_data = columns1)
+    ),
+    info = paste(
+      "body/column-data should be unfiltered if all samples are in both",
+      "body and column-data"
+    )
+  )
+
+  # column-data samples are a subset of the body-data samples
+  columns2 <- data.frame(
+    sample_id = LETTERS[1:2],
+    some_annot = c(TRUE, TRUE)
+  )
+  body2_matrix <- matrix(
+    1:6,
+    nrow = 3, dimnames = list(letters[1:3], LETTERS[1:2])
+  )
+  obj2 <- setup_heatmap(list(body_data = body1, column_data = columns2))
+
+  expect_equal(
+    object = obj2,
+    expected = as_heatmap_data(
+      list(body_matrix = body2_matrix, column_data = columns2)
+    ),
+    info = paste(
+      "column data contains a subset of the samples in body-data; hence body",
+      "data should be filtered"
+    )
+  )
+
+  # column-data samples are a superset of the body-data samples
+  columns3 <- data.frame(
+    sample_id = LETTERS[1:4],
+    some_annot = c(TRUE, TRUE, FALSE, FALSE)
+  )
+  body3_matrix <- matrix(
+    1:9,
+    nrow = 3, dimnames = list(letters[1:3], LETTERS[1:3])
+  )
+  obj3 <- setup_heatmap(list(body_data = body1, column_data = columns3))
+
+  expect_equal(
+    object = obj3,
+    expected = as_heatmap_data(
+      list(body_matrix = body3_matrix, column_data = columns3[1:3, ])
+    ),
+    info = paste(
+      "column data contains a superset of the samples in body-data; hence",
+      "the column-data should be filtered down"
+    )
+  )
+
+  # column-data ordering should specify the order of the samples in the
+  # resulting heatmap
+  columns4 <- data.frame(
+    sample_id = c("A", "C", "B"),
+    same_annot = c(TRUE, FALSE, TRUE)
+  )
+  body4_matrix <- matrix(
+    c(1, 2, 3, 7, 8, 9, 4, 5, 6),
+    nrow = 3, dimnames = list(letters[1:3], c("A", "C", "B"))
+  )
+  obj4 <- setup_heatmap(list(body_data = body1, column_data = columns4))
+
+  expect_equal(
+    object = obj4,
+    expected = as_heatmap_data(
+      list(body_matrix = body4_matrix, column_data = columns4)
+    ),
+    info = paste(
+      "when the user provides column-data, the sample ordering in that",
+      "data-frame should be respected"
+    )
+  )
+})
