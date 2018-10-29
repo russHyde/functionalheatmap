@@ -88,6 +88,14 @@ test_that("top_annotation data-frame can be appended to heatmap_data", {
   hmd_no_column_data <- as_heatmap_data(
     get_hmd1()[c("body_matrix", "row_data")]
   )
+  hmd_with_tibble_coldata <- as_heatmap_data(
+    append(
+      get_hmd1()[c("body_matrix", "row_data")],
+      list(
+        column_data = tibble::as_tibble(get_hmd1()$column_data)
+      )
+    )
+  )
 
   expect_is(
     annotate_heatmap(hmd1, top_annotations = "zig"),
@@ -121,6 +129,14 @@ test_that("top_annotation data-frame can be appended to heatmap_data", {
       "the top_annotation data should equal the corresponding",
       "sub-data-frame of column_data"
     )
+  )
+
+  expect_equal(
+    object = annotate_heatmap(
+      hmd_with_tibble_coldata, top_annotations = "zig"
+      )$top_annotation,
+    expected = get_hmd1()[["column_data"]]["zig"],
+    info = "top_annotations can be added from a tibble"
   )
 })
 
