@@ -57,7 +57,10 @@ annotate_heatmap <- function(x,
       annotation_df_name %in% names(x) &&
         is.data.frame(x[[annotation_df_name]])
     )
-    x[[output_df_name]] <- x[[annotation_df_name]][annotation_track_names]
+    x[[output_df_name]] <- as.data.frame(
+      x[[annotation_df_name]][annotation_track_names],
+      stringsAsFactors = FALSE
+    )
   }
   x
 }
