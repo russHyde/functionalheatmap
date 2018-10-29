@@ -18,7 +18,13 @@ test_that("`annotate_heatmap` fails with invalid input", {
 
 ###############################################################################
 
-get_hmd1 <- function() {
+get_hmd1 <- function(tibble_column_data = FALSE) {
+  df_func <- if (tibble_column_data) {
+    tibble::tibble
+  } else {
+    data.frame
+  }
+
   as_heatmap_data(
     list(
       body_matrix = matrix(
@@ -30,7 +36,7 @@ get_hmd1 <- function() {
         foo = c(TRUE, FALSE, FALSE, TRUE),
         bar = 1:4
       ),
-      column_data = data.frame(
+      column_data = df_func(
         sample_id = LETTERS[1:3],
         zig = c(TRUE, FALSE, FALSE),
         zag = c(20, 10, 50)
@@ -196,10 +202,27 @@ test_that(
       top_dots = list(show_legend = FALSE)
     )
 
+    annotated_hmd_from_tibble_column_data <- get_hmd1(
+      tibble_column_data = TRUE
+    ) %>%
+    annotate_heatmap(
+      top_annotations = "zig"
+    )
+
     expect_is(
       .get_top_annotation_object(hmd_with_zig),
-      "HeatmapAnnotation"
+      "HeatmapAnnotation",
+      "A HeatmapAnnoation can be built from a heatmap_data"
     )
+
+    expect_is(
+      .get_top_annotation_object(annotated_hmd_from_tibble_column_data),
+      "HeatmapAnnotation",
+      info = paste(
+        "A HeatmapAnnotation can be built when tibble column data is provided"
+      )
+    )
+
     expect_is(
       plot_heatmap(hmd_with_zig),
       "Heatmap",
