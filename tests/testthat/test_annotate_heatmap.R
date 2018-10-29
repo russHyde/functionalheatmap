@@ -139,8 +139,9 @@ test_that("top_annotation data-frame can be appended to heatmap_data", {
 
   expect_equal(
     object = annotate_heatmap(
-      hmd_with_tibble_coldata, top_annotations = "zig"
-      )$top_annotation,
+      hmd_with_tibble_coldata,
+      top_annotations = "zig"
+    )$top_annotation,
     expected = get_hmd1()[["column_data"]]["zig"],
     info = "top_annotations can be added from a tibble"
   )
@@ -251,14 +252,13 @@ test_that(
   paste(
     "Valid objects / plots can be made when tibble annotation data is
     provided"
-  ),
-  {
+  ), {
     annotated_hmd_from_tibble_column_data <- get_hmd1(
       tibble_column_data = TRUE
     ) %>%
-    annotate_heatmap(
-      top_annotations = "zig"
-    )
+      annotate_heatmap(
+        top_annotations = "zig"
+      )
 
     expect_is(
       .get_top_annotation_object(annotated_hmd_from_tibble_column_data),
@@ -292,4 +292,5 @@ test_that(
       )
     )
     dev.off()
-})
+  }
+)
