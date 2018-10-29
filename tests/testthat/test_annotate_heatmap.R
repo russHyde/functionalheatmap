@@ -202,25 +202,10 @@ test_that(
       top_dots = list(show_legend = FALSE)
     )
 
-    annotated_hmd_from_tibble_column_data <- get_hmd1(
-      tibble_column_data = TRUE
-    ) %>%
-    annotate_heatmap(
-      top_annotations = "zig"
-    )
-
     expect_is(
       .get_top_annotation_object(hmd_with_zig),
       "HeatmapAnnotation",
       "A HeatmapAnnoation can be built from a heatmap_data"
-    )
-
-    expect_is(
-      .get_top_annotation_object(annotated_hmd_from_tibble_column_data),
-      "HeatmapAnnotation",
-      info = paste(
-        "A HeatmapAnnotation can be built when tibble column data is provided"
-      )
     )
 
     expect_is(
@@ -259,3 +244,52 @@ test_that(
     )
   }
 )
+
+###############################################################################
+
+test_that(
+  paste(
+    "Valid objects / plots can be made when tibble annotation data is
+    provided"
+  ),
+  {
+    annotated_hmd_from_tibble_column_data <- get_hmd1(
+      tibble_column_data = TRUE
+    ) %>%
+    annotate_heatmap(
+      top_annotations = "zig"
+    )
+
+    expect_is(
+      .get_top_annotation_object(annotated_hmd_from_tibble_column_data),
+      "HeatmapAnnotation",
+      info = paste(
+        "A HeatmapAnnotation can be built when tibble column data is provided"
+      )
+    )
+
+    expect_is(
+      plot_heatmap(annotated_hmd_from_tibble_column_data),
+      "Heatmap",
+      info = paste(
+        "A Heatmap can be built when tibble `column_data` is provided"
+      )
+    )
+
+    # The following  has to be ran in an interactive session since it uses the
+    # graphics device.
+
+    # A heatmap can be plotted even when annotations have been taken from a
+    #  tibble (as column-data)
+    # - there was originally a bug with 'tibble' use
+    # - TODO: work out how to replace this test with a mocked-out graphics
+    # device since the test (originally) failed after plotting had started
+    skip_if_not(interactive())
+
+    expect_silent(
+      ComplexHeatmap::draw(
+        plot_heatmap(annotated_hmd_from_tibble_column_data)
+      )
+    )
+    dev.off()
+})
