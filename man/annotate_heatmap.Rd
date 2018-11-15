@@ -6,7 +6,7 @@
 of a `heatmap_data` object}
 \usage{
 annotate_heatmap(x, row_annotations = NULL, row_dots = NULL,
-  top_annotations = NULL, top_dots = NULL)
+  top_annotations = NULL, top_dots = NULL, replace = FALSE)
 }
 \arguments{
 \item{x}{A heatmap_data object.}
@@ -23,6 +23,11 @@ names.}
 
 \item{top_annotations}{Which columns of the `column_data` entry in
 `x` should be used when plotting annotations above the heatmap?}
+
+\item{replace}{If TRUE, then any existing row-annotation
+arguments stored in the heatmap_data will be discarded and replaced with
+the provided arguments. If FALSE, the provided arguments will append-to or
+overwrite the existing values.}
 }
 \description{
 Add row annotations to a heatmap based on columns from the `row_data` entry

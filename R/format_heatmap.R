@@ -55,7 +55,8 @@ format_heatmap <- function(x, ...) {
 
 .append_or_update <- function(current_list, new_list) {
   non_updated_args <- setdiff(names(current_list), names(new_list))
-  append(new_list, current_list[non_updated_args])
+  updated_list <- append(new_list, current_list[non_updated_args])
+  updated_list[sort(names(updated_list))]
 }
 
 .get_split_from_row_data <- function(x, split_columns) {
