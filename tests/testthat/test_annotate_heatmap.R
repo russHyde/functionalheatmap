@@ -130,6 +130,14 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
       "from row_dots when replace = TRUE"
     )
   )
+
+  expect_equal(
+    object = build_axis_annotator("rows")(hmd1, annotations = "foo"),
+    expected = annotate_rows(hmd1, annotations = "foo"),
+    info = paste(
+      "build_axis_annotator('rows')(...) is equivalent to annotate_rows(...)"
+    )
+  )
 })
 
 ###############################################################################

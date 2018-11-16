@@ -50,29 +50,44 @@ annotate_heatmap <- function(x,
 
 ###############################################################################
 
-annotate_top <- function(x, annotations = NULL, ..., replace = FALSE) {
-  dots <- if(length(list(...)) > 0) {
-    list(...)
-  } else {
-    NULL
+#' @importFrom   stats         setNames
+#'
+
+build_axis_annotator <- function(axis){
+  function(x, annotations = NULL, ..., replace = FALSE) {
+    dots <- if(length(list(...)) > 0) {
+      list(...)
+    } else {
+      NULL
+    }
+
+    arg_names <- list(
+      top = c("x", "top_annotations", "top_dots", "replace"),
+      rows = c("x", "row_annotations", "row_dots", "replace")
+    )[[axis]]
+
+    arg_list <- list(
+      x, annotations, dots, replace
+    ) %>%
+    stats::setNames(arg_names)
+
+    do.call(annotate_heatmap, arg_list)
   }
-  annotate_heatmap(
-    x, top_annotations = annotations, top_dots = dots, replace = replace
-  )
 }
 
-annotate_rows <- function(x, annotations = NULL, ..., replace = FALSE) {
-  dots <- if(length(list(...)) > 0) {
-    list(...)
-  } else {
-    NULL
-  }
-  annotate_heatmap(
-    x, row_annotations = annotations, row_dots = dots, replace = replace
-  )
-}
+##' annotate_top
+#'
+#' @export
 
-###############################################################################
+annotate_top <- build_axis_annotator("top")
+
+#' annotate_rows
+#'
+#' @export
+
+annotate_rows <- build_axis_annotator("rows")
+
+##############################################################################
 
 .append_argument_list <- function(x,
                                   arg_list_name = NULL,
