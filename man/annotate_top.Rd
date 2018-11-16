@@ -6,6 +6,22 @@
 \usage{
 annotate_top(x, annotations = NULL, ..., replace = FALSE)
 }
+\arguments{
+\item{x}{A heatmap_data object.}
+
+\item{annotations}{Which columns of the `column_data` entry in
+`x` should be used when plotting annotations above the heatmap?}
+
+\item{...}{Additional arguments to be passed to
+`ComplexHeatmap::HeatmapAnnotation` for the above-the-heatmap
+annotations. For example, `show_legend`, `col`. Check the docs for
+`HeatmapAnnotation` for parameter names.}
+
+\item{replace}{If TRUE, then any existing row-annotation
+arguments stored in the heatmap_data will be discarded and replaced with
+the provided arguments. If FALSE, the provided arguments will append-to or
+overwrite the existing values.}
+}
 \description{
 annotate_top
 }

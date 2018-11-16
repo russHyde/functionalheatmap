@@ -75,13 +75,31 @@ build_axis_annotator <- function(axis){
   }
 }
 
-##' annotate_top
+#' annotate_top
+#'
+#' @inheritParams   annotate_heatmap
+#'
+#' @param        annotations   Which columns of the `column_data` entry in
+#'   `x` should be used when plotting annotations above the heatmap?
+#' @param        ...           Additional arguments to be passed to
+#'   `ComplexHeatmap::HeatmapAnnotation` for the above-the-heatmap
+#'   annotations. For example, `show_legend`, `col`. Check the docs for
+#'   `HeatmapAnnotation` for parameter names.
 #'
 #' @export
 
 annotate_top <- build_axis_annotator("top")
 
 #' annotate_rows
+#'
+#' @inheritParams   annotate_heatmap
+#'
+#' @param        annotations   Which columns of the `column_data` entry in
+#'   `x` should be used when plotting annotations next to the heatmap?
+#' @param        ...           Additional arguments to be passed to
+#'   `ComplexHeatmap::HeatmapAnnotation` for the beside-the-heatmap
+#'   annotations. For example, `show_legend`, `col`. Check the docs for
+#'   `HeatmapAnnotation` for parameter names.
 #'
 #' @export
 
