@@ -85,6 +85,59 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
     expected = data.frame(foo = c(TRUE, FALSE, FALSE, TRUE)),
     info = "single column from row-data used as row_annotation data-frame"
   )
+
+  expect_equal(
+    object = annotate_rows(hmd1, annotations = "foo"),
+    expected = annotate_heatmap(hmd1, row_annotations = "foo"),
+    info = paste(
+      "equivalence of annotate_rows(x, ...) &",
+      "annotate_heatmap(x, row_annotations = ...)"
+    )
+  )
+
+  expect_equal(
+    object = annotate_rows(
+      annotate_rows(
+        hmd1,
+        annotations = "foo", na_col = "purple", show_legend = FALSE
+        ),
+      width = 10, show_legend = TRUE
+    ),
+    expected = annotate_rows(
+      hmd1,
+      annotations = "foo", na_col = "purple", show_legend = TRUE, width = 10
+    ),
+    info = paste(
+      "a second call to annotate_rows should supplement or overwrite when",
+      "replace = FALSE (default)"
+    )
+  )
+
+  expect_equal(
+    object = annotate_rows(
+      annotate_rows(
+        hmd1,
+        annotations = "foo", na_col = "purple", show_legend = FALSE
+      ),
+      width = 10, show_legend = TRUE, replace = TRUE
+    ),
+    expected = annotate_rows(
+      hmd1,
+      annotations = "foo", width = 10, show_legend = TRUE
+    ),
+    info = paste(
+      "a second call to annotate_rows should discard any existing entries",
+      "from row_dots when replace = TRUE"
+    )
+  )
+
+  expect_equal(
+    object = build_axis_annotator("rows")(hmd1, annotations = "foo"),
+    expected = annotate_rows(hmd1, annotations = "foo"),
+    info = paste(
+      "build_axis_annotator('rows')(...) is equivalent to annotate_rows(...)"
+    )
+  )
 })
 
 ###############################################################################
@@ -144,6 +197,51 @@ test_that("top_annotation data-frame can be appended to heatmap_data", {
     )$top_annotation,
     expected = get_hmd1()[["column_data"]]["zig"],
     info = "top_annotations can be added from a tibble"
+  )
+
+  expect_equal(
+    object = annotate_top(hmd1, annotations = "zig"),
+    expected = annotate_heatmap(hmd1, top_annotations = "zig"),
+    info = paste(
+      "equivalence of annotate_top(x, ...) &",
+      "annotate_heatmap(x, top_annotations = ...)"
+    )
+  )
+
+  expect_equal(
+    object = annotate_top(
+      annotate_top(
+        hmd1,
+        annotations = "zig", na_col = "purple", show_legend = FALSE
+      ),
+      height = 5, show_legend = TRUE
+    ),
+    expected = annotate_top(
+      hmd1,
+      annotations = "zig", na_col = "purple", height = 5, show_legend = TRUE
+    ),
+    info = paste(
+      "a second call to annotate_top should supplement or overwrite",
+      "when replace = FALSE (default)"
+    )
+  )
+
+  expect_equal(
+    object = annotate_top(
+      annotate_top(
+        hmd1,
+        annotations = "zig", na_col = "purple", show_legend = FALSE
+      ),
+      height = 5, show_legend = TRUE, replace = TRUE
+    ),
+    expected = annotate_top(
+      hmd1,
+      annotations = "zig", height = 5, show_legend = TRUE
+    ),
+    info = paste(
+      "a second call to annotate_top should discard any existing entries",
+      "from top_dots when replace = TRUE"
+    )
   )
 })
 
