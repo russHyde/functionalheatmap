@@ -10,7 +10,9 @@ setup_heatmap(x, row_index = "feature_id", column_index = "sample_id",
 \arguments{
 \item{x}{A poly_frame or list of named data-frames. This
 must contain a data-frame called body_data which defines the data used in
-the body of the heatmap (by two index columns and a value column).}
+the body of the heatmap (by two index columns and a value column).
+Data for use in column- or row-annoations should be passed in as the
+`row_data` and `column_data` entries of the `list` `x`.}
 
 \item{row_index, column_index, value_index}{In the data-frames
 provided, which column contains the data for the rows / columns / body of

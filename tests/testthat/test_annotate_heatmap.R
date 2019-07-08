@@ -100,7 +100,7 @@ test_that("row_annotation data-frame can be appended to heatmap_data", {
       annotate_rows(
         hmd1,
         annotations = "foo", na_col = "purple", show_legend = FALSE
-        ),
+      ),
       width = 10, show_legend = TRUE
     ),
     expected = annotate_rows(
@@ -314,7 +314,7 @@ test_that(
     )
 
     # Values in the mock annotation object aren't used in the test
-    ha <- HeatmapAnnotation(data.frame(zig = 1:3))
+    ha <- HeatmapAnnotation(df = data.frame(zig = 1:3))
     m <- mockery::mock(ha)
 
     testthat::with_mock(

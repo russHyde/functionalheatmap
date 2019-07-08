@@ -32,7 +32,7 @@
       )
     )
   } else {
-    methods::new("HeatmapAnnotation")
+    NULL
   }
 }
 

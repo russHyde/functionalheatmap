@@ -53,9 +53,9 @@ annotate_heatmap <- function(x,
 #' @importFrom   stats         setNames
 #'
 
-build_axis_annotator <- function(axis){
+build_axis_annotator <- function(axis) {
   function(x, annotations = NULL, ..., replace = FALSE) {
-    dots <- if(length(list(...)) > 0) {
+    dots <- if (length(list(...)) > 0) {
       list(...)
     } else {
       NULL
@@ -69,7 +69,7 @@ build_axis_annotator <- function(axis){
     arg_list <- list(
       x, annotations, dots, replace
     ) %>%
-    stats::setNames(arg_names)
+      stats::setNames(arg_names)
 
     do.call(annotate_heatmap, arg_list)
   }
@@ -111,7 +111,7 @@ annotate_rows <- build_axis_annotator("rows")
                                   arg_list_name = NULL,
                                   arg_list = NULL,
                                   replace = FALSE) {
-  stored_list <- if(arg_list_name %in% names(x) && !replace) {
+  stored_list <- if (arg_list_name %in% names(x) && !replace) {
     x[[arg_list_name]]
   } else {
     list()
