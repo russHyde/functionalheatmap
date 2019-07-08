@@ -3,6 +3,8 @@
 export(annotate_heatmap)
 export(annotate_rows)
 export(annotate_top)
+export(boolean_colour)
+export(define_annotation_colours)
 export(format_heatmap)
 export(plot_heatmap)
 export(setup_heatmap)

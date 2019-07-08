@@ -19,6 +19,7 @@ Suggests:
     tibble
 Collate:
     'annotate_heatmap.R'
+    'annotation_colours.R'
     'classes.R'
     'data_manipulation.R'
     'data_validity.R'
