@@ -7,6 +7,10 @@ cache: packages
 r_github_packages:
   - jimhester/lintr
 
+r_build_args: --no-manual --no-build-vignettes
+
+r_check_args: --no-manual --no-build-vignettes --ignore-vignettes
+
 bioc_required: true
 use_bioc: true
 
