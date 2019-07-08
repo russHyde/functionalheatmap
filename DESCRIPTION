@@ -11,10 +11,12 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/russHyde/functionalheatmap
 BugReports: https://github.com/russHyde/functionalheatmap/issues
-RoxygenNote: 6.0.1
-Suggests: testthat,
+RoxygenNote: 6.1.1
+Suggests:
+    testthat,
     covr,
-    mockery
+    mockery,
+    tibble
 Collate:
     'annotate_heatmap.R'
     'classes.R'
@@ -24,8 +26,7 @@ Collate:
     'to_complex_heatmap_object.R'
     'plot_heatmap.R'
     'setup_heatmap.R'
-Imports: dplyr,
-    tidyr,
+Imports: tidyr,
     magrittr,
     methods,
     ComplexHeatmap

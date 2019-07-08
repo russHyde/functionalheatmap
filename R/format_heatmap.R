@@ -15,6 +15,7 @@
 #'   define a vector of column-names from the `row_data` part of `x`, these
 #'   columns are then extracted and passed to `Heatmap()`.
 #'
+#' @importFrom   magrittr      %>%
 #' @importFrom   methods       is
 #' @export
 
