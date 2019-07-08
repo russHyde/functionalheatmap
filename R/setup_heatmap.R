@@ -16,9 +16,6 @@
 #'   provided, which column contains the data for the rows / columns / body of
 #'   the heatmap?
 #'
-#' @importFrom   magrittr      %>%
-#' @importFrom   tidyr         spread_
-#'
 #' @include      data_manipulation.R
 #'
 #' @export
