@@ -314,7 +314,7 @@ test_that(
     )
 
     # Values in the mock annotation object aren't used in the test
-    ha <- HeatmapAnnotation(df = data.frame(zig = 1:3))
+    ha <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(zig = 1:3))
     m <- mockery::mock(ha)
 
     testthat::with_mock(
